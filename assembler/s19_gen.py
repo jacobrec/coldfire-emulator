@@ -1,6 +1,22 @@
 from utils import assertAs
 
 
+def generate_s19_file(bin_list, start_loc=0):
+    """
+    this will take that list, and return the list of records, it also takes the start location of the program
+    the list it takes in is a list of tuples containing the data, then the memory location
+
+    >>> generate_s19_file([(15, 0),(10, 4)], 0)
+    ['S1030000FED', 'S1030004AB2', 'S5030002FA', 'S9030000FC']
+    """
+    srecs = []
+    for binl in bin_list:
+        srecs.append(s1_rec(*binl))
+    srecs.append(s5_rec(len(srecs)))
+    srecs.append(s9_rec(start_loc))
+    return srecs
+
+
 def s1_rec(data, loc):
     """
     Generates s1 records from a given address and a byte array
@@ -95,6 +111,9 @@ def to_hex_string(num, minDigits=0):
 
     >>> to_hex_string([1, 1])
     '0101'
+
+    >>> to_hex_string(0, 4)
+    '0000'
     """
     if isinstance(num, int):
         s = hex(num)[2:]
@@ -130,3 +149,8 @@ def to_byte_array(number):
         number = number // 256
 
     return byts
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()

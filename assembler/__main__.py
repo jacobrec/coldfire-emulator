@@ -1,7 +1,5 @@
 import sys
 from utils import assertAs
-from s19_gen import assembleFile
-from preprocessor import preprocess
 
 
 def main():
@@ -16,30 +14,21 @@ def main():
 
 
 def assembleFile(f_in_name, f_out_name):
-    records = []
-    content = []
+    """
+        Okay, so this is the entry point for the assembler.
+        This calls the lexer, which calls the parser, which
+        calls the assembler, which calls the s19 generator.
 
-    with open(f_in_name, "r") as inFile:
-        content = f.readlines()
+        The flow will look like this
+        f_in_name >> lexer >> parser >> assembler >> s19_gen >> f_out_name
 
-    blocks = preprocess(content)
-    startloc, _ = blocks[0]
-
-    for loc, lines in blocks:
-        for line in lines:
-            data = assembleLine(line)
-            records.append(s1_rec(data, loc))
-
-    records.append(s5_rec(len(content)))
-    records.append(s9_rec(startloc))
-
-    with open(f_out_name, "w+") as outFile:
-        for rec in records:
-            print(rec, file=outFile)
-
-
-def assembleLine(line):
-    pass
+        The lexer will take in the in file, and return a token stream
+        The parser will take in the token stream and return an ast
+        The assembler will take in an ast and return a list of binary data, with it's memory location
+        The s19 gen will take that list, and return the list of records.
+        Then this function, now that it has this list of records, will write them to the file.
+    """
+    print(f_in_name + " >> " + f_out_name)
 
 
 main()
