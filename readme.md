@@ -14,6 +14,7 @@ Our emulator emulates a subset of the coldfire instructions. The goal is all the
 
 ## How to use
 I like the command line, it's simple and easy to use. The idea for how to use this is to be able to run two commands.
+
     $ assemble <input file> [output file]
     $ emulate <input file> [-d]
 And it will start an emulator, and run the code, putting trap #15 to std_out. It should also support a -d flag, from this you should be able to run your code, set break points, and step through the code. As well as view memory, registers, and the condition flags.
