@@ -1,0 +1,29 @@
+# Grammar
+program     > line* EOF
+
+line        > directive
+            | statement
+
+directive   > "." DIRECTIVE
+
+statement   > OPCODE "." SIZE memLoc "," memLoc
+            | OPCODE "." SIZE memloc
+            | OPCODE "." SIZE
+
+memLoc      > %Dn               # Data Register Direct
+            | %An               # Address Register Direct
+            | (%An)             # Register Indirect
+            | (%An)+            # Post increment register indirect
+            | -(%An)            # Pre Decrement register indirect
+            | n(%An)            # Register indirect with offset
+            | n(%An, Xn*SF)     # Scaled register with offset
+            | nnnn.W            # Absolute short
+            | nnnnnnnn.L        # Absolute long
+            | n(PC)             # PC with offset
+            | n(PC, Xn*SF)      # Scaled pc with offset
+            | #nnn              # Immediate
+
+
+OPCODE      > one of the supported opcode
+DIRECTIVE   > one of the supported directives
+SIZE        > ("l" | "w" | "b")
