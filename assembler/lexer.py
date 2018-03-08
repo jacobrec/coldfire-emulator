@@ -64,120 +64,120 @@ class Token:
 
 class Lexer:
     def __init__(self, source):
-        self.source = source
+        self.source = source.lower()
         self.current = 0
         self.line = 1
         self.toks = []
 
     def lex(self):
         self.toks = []
-        self.addTok(Terminator)
-        while not self.isEnd():
-            self.scanTok()
-        self.addTok(EOF)
+        self._addTok(Terminator)
+        while not self._isEnd():
+            self._scanTok()
+        self._addTok(EOF)
         return self.toks
 
-    def scanTok(self):
-        c = self.advance()
+    def _scanTok(self):
+        c = self._advance()
 
         if c == "\n":
             self.line += 1
             if not (self.toks[-1].toktype is Terminator):
-                self.addTok(Terminator)
+                self._addTok(Terminator)
         elif c in skipchar:
             pass
-        elif (c == ";") or ((c == "/") and (self.peek() == "/")):
+        elif (c == ";") or ((c == "/") and (self._peek() == "/")):
             while c != "\n":
-                c = self.advance()
+                c = self._advance()
             self.line += 1
-        elif (c == "/") and (self.peek() == "*"):
-            while not ((c == "*") and (self.peek() == "/")):
-                c = self.advance()
-            self.advance()
+        elif (c == "/") and (self._peek() == "*"):
+            while not ((c == "*") and (self._peek() == "/")):
+                c = self._advance()
+            self._advance()
         elif c == "%":
-            self.register()
+            self._register()
         elif c == "#":
-            self.literal()
+            self._literal()
         elif c.isdigit():
-            num = self.number()
-            self.addTok(Number, num)
+            num = self._number()
+            self._addTok(Number, num)
         elif c.isalpha():
-            self.operator()
+            self._operator()
         elif c in singlechars:
-            self.addTok(singlechars[c])
+            self._addTok(singlechars[c])
         elif c == ".":
             if self.toks[-1].toktype is Terminator:
-                self.directive()
+                self._directive()
         else:
             assertAs(0, "Unrecognized charactor (%c)" % c)
 
-    def register(self):
-        regType = self.advance()
-        regNum = self.advance()
-        self.addTok(Register, (regType, int(regNum)))
+    def _register(self):
+        regType = self._advance()
+        regNum = self._advance()
+        self._addTok(Register, (regType, int(regNum)))
 
-    def literal(self):
-        self.advance()
-        self.addTok(Literal, self.number())
+    def _literal(self):
+        self._advance()
+        self._addTok(Literal, self._number())
 
-    def number(self):
-        num = self.peek(-1)
+    def _number(self):
+        num = self._peek(-1)
         base = 10
-        while self.peek().isdigit() or self.peek() == "b" or self.peek() == "x":
-            num += self.peek()
+        while self._peek().isdigit() or self._peek() == "b" or self._peek() == "x":
+            num += self._peek()
             if num[-1] == 'x':
                 num = ""
                 base = 16
             elif num[-1] == 'b':
                 num = ""
                 base = 2
-            self.advance()
+            self._advance()
         return int(num, base)
 
-    def operator(self):
-        name = self.word()
+    def _operator(self):
+        name = self._word()
         if len(name) == 3 and name[0] == "b":
-            self.addTok(Operator, (name))
+            self._addTok(Operator, (name))
             return
         if name in instructions:
             size = "l"
-            if self.peek() == ".":
-                self.advance()
-                size = self.advance()
-            self.addTok(Operator, (name, size))
+            if self._peek() == ".":
+                self._advance()
+                size = self._advance()
+            self._addTok(Operator, (name, size))
         else:
-            if self.peek() == ":":
-                self.addTok(LabelDef, name)
-                self.advance()
+            if self._peek() == ":":
+                self._addTok(LabelDef, name)
+                self._advance()
             else:
-                self.addTok(Label, name)
+                self._addTok(Label, name)
 
-    def directive(self):
-        self.advance()
-        name = self.word()
-        assertAs(name in directives, "Directive [%s] not supported" % name)
-        self.addTok(Directive, name)
+    def _directive(self):
+        self._advance()
+        name = self._word()
+        assertAs(name in directives, "_directive [%s] not supported" % name)
+        self._addTok(Directive, name)
 
-    def word(self):
-        name = self.peek(-1)
-        while self.peek().isalnum():
-            name += self.advance()
+    def _word(self):
+        name = self._peek(-1)
+        while self._peek().isalnum():
+            name += self._advance()
 
         return name
 
-    def addTok(self, type, data=None):
+    def _addTok(self, type, data=None):
         self.toks.append(Token(type, data, self.line))
 
-    def advance(self):
+    def _advance(self):
         self.current += 1
         return self.source[self.current - 1]
 
-    def peek(self, skip=0):
-        if self.isEnd():
+    def _peek(self, skip=0):
+        if self._isEnd():
             return '\0'
         return self.source[self.current + skip]
 
-    def isEnd(self):
+    def _isEnd(self):
         return self.current >= len(self.source)
 
 
