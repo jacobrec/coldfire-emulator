@@ -1,7 +1,10 @@
 from tokens import *
 
+DataRegisterDirect, AddressRegisterDirect, RegisterIndirect, PostIncrementRegisterIndirect, PreDecrementRegisterIndirect, RegisterIndirectWithOffset, RegisterIndirectWithOffset, ScaledRegisterWithOffset, AbsoluteShort, AbsoluteLong, PCWithOffset, ScaledPcWithOffset, Immediate, *_ = range(20)
+
 
 class Parser:
+    ############## init code ###############
     def __init__(self, toks):
         self.toks = toks
         self.current = 0
@@ -18,9 +21,12 @@ class Parser:
 
         print(stmts)
         return stmts
+########### recursive descent parser ###########
 
     def _line(self):
-        if self._check(Directive):
+        if self._match(Terminator):  # allow blank lines
+            return self._line()
+        elif self._check(Directive):
             return self._directive()
         elif self._check(Operator):
             return self._operator()
@@ -30,7 +36,8 @@ class Parser:
             raise ParseError("Unexecpected token", self._peek())
 
     def _directive(self):
-        dirType = self._consume(Directive)
+        dirType = self._consume(
+            Directive, "This should definataly be a directive.")
         data = []
         while not self._match(Terminator):
             data.append(self._advance())
@@ -39,8 +46,26 @@ class Parser:
     def _label(self):
         return Label(self._advance().data)
 
+############ operator and memory functions #############
     def _operator(self):
-        self._sync()  # TODO add this
+        opcode = self._consume(
+            Operator, "This should definataly be a operator.")
+        if self._match(Terminator):
+            return Instruction(opcode)
+        mem1 = self._memory()
+        if self._match(Terminator):
+            return Instruction(opcode, mem1)
+        self._consume(Comma, "am I missing a comma?")
+        mem2 = self._memory()
+
+        return Instruction(opcode, mem1, mem2)
+
+    def _memory(self):
+        if self._match(Register, Literal):
+            return self._peek(-1)
+        # TODO: finish this
+
+########  Helper functions  #############
 
     def _match(self,  *types):
         for type in types:
@@ -120,5 +145,7 @@ class Direct:
 
 # Jarrett, you'll need to write this class as you see fit
 # this basically the data register mode
+
+
 class Data:
     pass
