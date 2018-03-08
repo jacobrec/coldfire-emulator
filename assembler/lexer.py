@@ -142,7 +142,7 @@ class Lexer:
     def _operator(self):
         name = self._word()
         if len(name) == 3 and name[0] == "b":
-            self._addTok(Operator, (name))
+            self._addTok(Operator, (name, "l"))
             return
         if name in instructions:
             size = "l"
