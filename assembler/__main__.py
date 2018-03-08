@@ -1,6 +1,7 @@
 import sys
 from utils import assertAs
 from lexer import lex
+from parser import parse
 from tokens import *
 
 
@@ -31,8 +32,10 @@ def assembleFile(f_in_name, f_out_name):
         Then this function, now that it has this list of records, will write them to the file.
     """
     print(f_in_name + " >> " + f_out_name)
+    toks = lex(f_in_name)
     print("\n".join("" if x.toktype is Terminator else str(x)
-                    for x in lex(f_in_name)))
+                    for x in toks))
+    parse(toks)
 
 
 main()

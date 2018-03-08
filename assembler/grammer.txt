@@ -3,8 +3,11 @@ program     > line* EOF
 
 line        > directive
             | statement
+            | label
 
 directive   > "." DIRECTIVE
+
+label       > name ":"
 
 statement   > OPCODE "." SIZE memLoc "," memLoc
             | OPCODE "." SIZE memloc
