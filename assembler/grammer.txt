@@ -12,6 +12,7 @@ label       > name ":"
 statement   > OPCODE "." SIZE memLoc "," memLoc
             | OPCODE "." SIZE memloc
             | OPCODE "." SIZE
+            | OPCODE label
 
 memLoc      > %Dn               # Data Register Direct
             | %An               # Address Register Direct

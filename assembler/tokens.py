@@ -6,6 +6,10 @@ class Number:
     pass
 
 
+class MemLocLiteral:
+    pass
+
+
 class Register:
     pass
 

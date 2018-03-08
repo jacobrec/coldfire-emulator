@@ -5,7 +5,7 @@ instructions = {
     "and", "andi",
     "asl", "asr",
     "bra", "b**",  # TODO figure out how to deal with wildcards
-    "bchg", "bclr", "bset", "btst"
+    "bchg", "bclr", "bset", "btst",
     "clr",
     "cmp", "cmpa", "cmpi",
     "divs", "divu",
@@ -100,7 +100,12 @@ class Lexer:
             self._literal()
         elif c.isdigit():
             num = self._number()
-            self._addTok(Number, num)
+            if(self._peek() == "."):
+                self._advance()
+                self._addTok(MemLocLiteral, (num, self._peek()))
+                self._advance()
+            else:
+                self._addTok(Number, num)
         elif c.isalpha():
             self._operator()
         elif c in singlechars:

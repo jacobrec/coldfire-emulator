@@ -10,6 +10,11 @@ Moveq.L #6, %D2
 moVeq.l #1, %D3
 mOve.l 8(%A0), -(%A0)
 movE.l (%A0)+, 8(%A0, %D0*2)
+clr %A0
+
+nop
+
+movE.l 0x333.l, 0x343.w
 
 
 

@@ -1,6 +1,6 @@
 from tokens import *
-
-DataRegisterDirect, AddressRegisterDirect, RegisterIndirect, PostIncrementRegisterIndirect, PreDecrementRegisterIndirect, RegisterIndirectWithOffset, RegisterIndirectWithOffset, ScaledRegisterWithOffset, AbsoluteShort, AbsoluteLong, PCWithOffset, ScaledPcWithOffset, Immediate, *_ = range(20)
+from memory import *
+import tokens
 
 
 class Parser:
@@ -19,7 +19,7 @@ class Parser:
                 self._sync()
                 print(e)  # TODO: deal with errors
 
-        print(stmts)
+        print("\n".join([str(x) for x in stmts]))
         return stmts
 ########### recursive descent parser ###########
 
@@ -31,7 +31,7 @@ class Parser:
         elif self._check(Operator):
             return self._operator()
         elif self._check(LabelDef):
-            return self._label()
+            return self._label(True)
         else:
             raise ParseError("Unexecpected token", self._peek())
 
@@ -43,8 +43,8 @@ class Parser:
             data.append(self._advance())
         return Direct(dirType, data)
 
-    def _label(self):
-        return Label(self._advance().data)
+    def _label(self, isDef=False):
+        return Label(self._advance().data, isDef)
 
 ############ operator and memory functions #############
     def _operator(self):
@@ -52,6 +52,8 @@ class Parser:
             Operator, "This should definataly be a operator.")
         if self._match(Terminator):
             return Instruction(opcode)
+        if self._check(tokens.Label):
+            return Instruction(opcode, self._label())
         mem1 = self._memory()
         if self._match(Terminator):
             return Instruction(opcode, mem1)
@@ -61,9 +63,53 @@ class Parser:
         return Instruction(opcode, mem1, mem2)
 
     def _memory(self):
-        if self._match(Register, Literal):
-            return self._peek(-1)
-        # TODO: finish this
+        if self._match(Register):  # DataDirect, and AddressDirect
+            reg = self._peek(-1).data
+            regType = reg[0]
+            regNum = reg[1]
+            if regType == "a":
+                return AddressDirect(regNum)
+            if regType == "d":
+                return DataDirect(regNum)
+        elif self._match(Decrement):  # AddressIndirectPreDecrement
+            self._consume(GroupStart, "expecting a '('")
+            reg = self._consume(Register, "expecting a 'register'").data
+            self._consume(GroupEnd, "expecting a ')'")
+            assert(reg[0] == 'a')
+            return AddressIndirectPreDecrement(reg[1])
+        elif self._match(Literal):  # ImmediateData
+            return ImmediateData(self._peek(-1).data)
+        elif self._match(MemLocLiteral):  # AbsoluteLong and AbsoluteShort
+            loc = self._peek(-1).data
+            if loc[1] == "l":
+                return AbsoluteLong(loc[0])
+            if loc[1] == "w":
+                return AbsoluteShort(loc[0])
+        elif self._match(GroupStart):  # AddressIndirect, AddressIndirectPostIncrement
+            reg = self._consume(Register, "expecting a 'register'").data
+            if self._match(Comma):  # ScaledAddressWithOffset
+                return self.partialScaledIndirectWithOffset(0, reg[1])
+            self._consume(GroupEnd, "expecting a ')'")
+            if self._match(Increment):  # ScaledAddressWithOffset
+                return AddressIndirectPostIncrement(reg[1])
+            return AddressIndirect(reg[1])
+        elif self._match(Number):  # AddressIndirectWithOffset
+            num = self._peek(-1).data
+            self._consume(GroupStart, "expecting a '('")
+            reg = self._consume(Register, "expecting a 'register'").data
+            if self._match(Comma):  # ScaledAddressWithOffset
+                return self.partialScaledIndirectWithOffset(num, reg[1])
+            self._consume(GroupEnd, "expecting a ')'")
+            return AddressIndirectWithOffset(reg[1], num)
+
+    def partialScaledIndirectWithOffset(self, offset, addReg):
+        # n(%An, Xn*SF)
+        reg2 = self._consume(Register, "expecting a 'register'").data
+        self._consume(Star, "expecting a '*'")
+        scaleFactor = self._consume(Number, "expecting a number").data
+        self._consume(GroupEnd, "expecting a ')'")
+        return ScaledAddressWithOffset(addReg, reg2[1], reg2[0], scaleFactor, offset)
+
 
 ########  Helper functions  #############
 
@@ -127,10 +173,24 @@ class Instruction:
         self.mem_src = mem1
         self.mem_dest = mem2
 
+    def __repr__(self):
+        return str(self)
+
+    def __str__(self):
+        if self.mem_dest is None:
+            if self.mem_src is None:
+                return "{}.{}".format(self.opcode.data[0], self.opcode.data[1])
+            return "{}.{} {}".format(self.opcode.data[0], self.opcode.data[1], str(self.mem_src))
+        return "{}.{} {}, {}".format(self.opcode.data[0], self.opcode.data[1], str(self.mem_src), str(self.mem_dest))
+
 
 class Label:
-    def __init__(self, name):
+    def __init__(self, name, isDef=False):
         self.name = name
+        self.isDef = isDef
+
+    def __str__(self):
+        return "{}:".format(self.name)
 
 
 class Direct:
@@ -142,10 +202,5 @@ class Direct:
         self.directive = directive
         self.data = data
 
-
-# Jarrett, you'll need to write this class as you see fit
-# this basically the data register mode
-
-
-class Data:
-    pass
+    def __str__(self):
+        return ".{} {}".format(self.directive.data, ", ".join([str(x.data) for x in self.data]))
