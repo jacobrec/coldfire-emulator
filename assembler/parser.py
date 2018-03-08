@@ -19,7 +19,6 @@ class Parser:
                 self._sync()
                 print(e)  # TODO: deal with errors
 
-        print("\n".join([str(x) for x in stmts]))
         return stmts
 ########### recursive descent parser ###########
 

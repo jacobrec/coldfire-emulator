@@ -31,11 +31,14 @@ def assembleFile(f_in_name, f_out_name):
         The s19 gen will take that list, and return the list of records.
         Then this function, now that it has this list of records, will write them to the file.
     """
-    print(f_in_name + " >> " + f_out_name)
+    print(f_in_name + " >> " + f_out_name + "\n")
+
     toks = lex(f_in_name)
-    print("\n".join("" if x.toktype is Terminator else str(x)
-                    for x in toks))
-    parse(toks)
+    # print("\n".join(str(x) for x in toks))
+    # print("\n\n")
+
+    ast = parse(toks)
+    print("\n".join([str(x) for x in ast]))
 
 
 main()
