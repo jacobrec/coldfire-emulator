@@ -18,6 +18,8 @@ This will take in the list of instructions and calculate the amount of memory ea
 The processor will take in a list of statements and process all the assembler directives. This includes .org(specifying memory locations), .equ(symbolic replacements), and data type storage, ex) .long, .ascii
 ### Assembler
 This takes in the processed statements and generates an array of bytes for each one.
+### Linker
+This takes in the assembled file and links it, dealing with memory locations, I.E. labels
 ### s19_generator
 This takes in the array of bytes and generates the s19 file, a type of srec file, which is the format used for loading data onto the coldfire.
 
