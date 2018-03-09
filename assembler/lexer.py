@@ -92,6 +92,8 @@ class Lexer:
             self.line += 1
         elif (c == "/") and (self._peek() == "*"):
             while not ((c == "*") and (self._peek() == "/")):
+                if c == "\n":
+                    self.line += 1
                 c = self._advance()
             self._advance()
         elif c == "%":
