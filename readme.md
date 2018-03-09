@@ -12,8 +12,6 @@ Our coldfire assembler accepts a syntax identical to that of the assembler used 
 The lexer will take in the name of the file and produce a token stream.
 ### Parser
 The parser will take in the token stream and produce a list of statements. Each statement is an abstract syntax tree representing an instruction. The plan is to write a recursive descent parser for this.
-### Sizer
-This will take in the list of instructions and calculate the amount of memory each one will take. This is important for dealing with labels, and also for generating the s19 files later. It appends the memory information to each instruction
 ### Processor
 The processor will take in a list of statements and process all the assembler directives. This includes .org(specifying memory locations), .equ(symbolic replacements), and data type storage, ex) .long, .ascii
 ### Assembler
