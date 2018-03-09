@@ -77,7 +77,7 @@ class ScaledAddressWithOffset(Memory):
         self.additionalsize = 2
 
     def __str__(self):
-        return "{}(%A{}, %{}{}*{})".format(self.offset, self.addRegNum, self.reg2Type, self.reg2Num, self.scaleFactor)
+        return "{}(%A{}, %{}{}*{})".format(self.offset, self.addRegNum, self.reg2Type.upper(), self.reg2Num, self.scaleFactor)
 
 
 class AbsoluteShort(Memory):
