@@ -8,13 +8,14 @@ Requires %D2 to be a positive integer smaller then 13
 .org 0x100
 Moveq.L #6, %D2
 moVeq.l #1, %D3
+moVeq.l #1, 0x12345678.l
 mOve.l 8(%A0), -(%A0)
 movE.l (%A0)+, 8(%A0, %D0*2)
 clr %A0
 
 nop
 
-movE.l 0x333.l, 0x343.w
+movE.l 0x333.w, 0x343.w
 
 
 

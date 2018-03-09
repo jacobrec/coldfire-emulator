@@ -171,6 +171,19 @@ class Instruction:
         self.opcode = opcode
         self.mem_src = mem1
         self.mem_dest = mem2
+        self.calculateSize()
+
+    def calculateSize(self):
+        self.size = 2 + (self.mem_src.additionalsize if self.mem_src is not None else 0) + \
+            (self.mem_dest.additionalsize if self.mem_dest is not None else 0)
+
+        if self.opcode.data[0][-1] == "q":
+            if isinstance(self.mem_src, ImmediateData):
+                self.size -= 4
+
+        if self.size > 6:
+            raise ParseError(
+                "Invalid memory access for instruction", self.opcode)
 
     def __repr__(self):
         return str(self)
@@ -178,18 +191,9 @@ class Instruction:
     def __str__(self):
         if self.mem_dest is None:
             if self.mem_src is None:
-                return "{}.{}".format(self.opcode.data[0], self.opcode.data[1])
-            return "{}.{} {}".format(self.opcode.data[0], self.opcode.data[1], str(self.mem_src))
-        return "{}.{} {}, {}".format(self.opcode.data[0], self.opcode.data[1], str(self.mem_src), str(self.mem_dest))
-
-
-class Label:
-    def __init__(self, name, isDef=False):
-        self.name = name
-        self.isDef = isDef
-
-    def __str__(self):
-        return "{}:".format(self.name)
+                return "{}:    {}.{}".format(self.size, self.opcode.data[0], self.opcode.data[1])
+            return "{}:    {}.{} {}".format(self.size, self.opcode.data[0], self.opcode.data[1], str(self.mem_src))
+        return "{}:    {}.{} {}, {}".format(self.size, self.opcode.data[0], self.opcode.data[1], str(self.mem_src), str(self.mem_dest))
 
 
 class Direct:
@@ -202,4 +206,4 @@ class Direct:
         self.data = data
 
     def __str__(self):
-        return ".{} {}".format(self.directive.data, ", ".join([str(x.data) for x in self.data]))
+        return "      .{} {}".format(self.directive.data, ", ".join([str(x.data) for x in self.data]))
