@@ -77,7 +77,7 @@ class Lexer:
         self._addTok(EOF)
         return self.toks
 
-    def _scanTok(self):
+    def _scanTok(self):  # TODO, negative literals don't word
         c = self._advance()
 
         if c == "\n":
@@ -108,7 +108,7 @@ class Lexer:
                 self._advance()
             else:
                 self._addTok(Number, num)
-        elif c.isalpha():
+        elif c.isalpha() or c == "_":
             self._operator()
         elif c in singlechars:
             self._addTok(singlechars[c])
@@ -124,8 +124,12 @@ class Lexer:
         self._addTok(Register, (regType, int(regNum)))
 
     def _literal(self):
-        self._advance()
-        self._addTok(Literal, self._number())
+        if self._peek().isdigit():
+            self._advance()
+            self._addTok(Literal, self._number())
+        elif self._peek().isalpha():
+            self._advance()
+            self._addTok(Literal, self._word())
 
     def _number(self):
         num = self._peek(-1)
@@ -167,7 +171,7 @@ class Lexer:
 
     def _word(self):
         name = self._peek(-1)
-        while self._peek().isalnum():
+        while self._peek().isalnum() or self._peek() == "_":
             name += self._advance()
 
         return name

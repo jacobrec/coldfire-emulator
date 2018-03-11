@@ -1,3 +1,7 @@
+
+import assembler
+
+
 class Memory:
     pass
 
@@ -20,6 +24,12 @@ class DataDirect(Memory):
     def __str__(self):
         return "%D{}".format(self.num)
 
+    def modeStr(self):
+        return "000"
+
+    def regStr(self):
+        return assembler.numToBitStr(self.num, 3)
+
 
 class AddressDirect(Memory):
     def __init__(self, regNum):
@@ -28,6 +38,12 @@ class AddressDirect(Memory):
 
     def __str__(self):
         return "%A{}".format(self.num)
+
+    def modeStr(self):
+        return "001"
+
+    def regStr(self):
+        return assembler.numToBitStr(self.num, 3)
 
 
 class AddressIndirect(Memory):
@@ -38,6 +54,12 @@ class AddressIndirect(Memory):
     def __str__(self):
         return "(%A{})".format(self.num)
 
+    def modeStr(self):
+        return "010"
+
+    def regStr(self):
+        return assembler.numToBitStr(self.num, 3)
+
 
 class AddressIndirectPostIncrement(Memory):
     def __init__(self, regNum):
@@ -46,6 +68,12 @@ class AddressIndirectPostIncrement(Memory):
 
     def __str__(self):
         return "(%A{})+".format(self.num)
+
+    def modeStr(self):
+        return "011"
+
+    def regStr(self):
+        return assembler.numToBitStr(self.num, 3)
 
 
 class AddressIndirectPreDecrement(Memory):
@@ -56,6 +84,12 @@ class AddressIndirectPreDecrement(Memory):
     def __str__(self):
         return "-(%A{})".format(self.num)
 
+    def modeStr(self):
+        return "100"
+
+    def regStr(self):
+        return assembler.numToBitStr(self.num, 3)
+
 
 class AddressIndirectWithOffset(Memory):
     def __init__(self, regNum, offset):
@@ -65,6 +99,12 @@ class AddressIndirectWithOffset(Memory):
 
     def __str__(self):
         return "{1}(%A{0})".format(self.num, self.offset)
+
+    def modeStr(self):
+        return "01"
+
+    def regStr(self):
+        return assembler.numToBitStr(self.num, 3)
 
 
 class ScaledAddressWithOffset(Memory):
@@ -79,23 +119,41 @@ class ScaledAddressWithOffset(Memory):
     def __str__(self):
         return "{}(%A{}, %{}{}*{})".format(self.offset, self.addRegNum, self.reg2Type.upper(), self.reg2Num, self.scaleFactor)
 
+    def modeStr(self):
+        return "110"
+
+    def regStr(self):
+        return assembler.numToBitStr(self.num, 3)
+
 
 class AbsoluteShort(Memory):
     def __init__(self, data):
-        self.loc = data
+        self.val = data
         self.additionalsize = 2
 
     def __str__(self):
-        return "{}.w".format(hex(self.loc))
+        return "{}.w".format(hex(self.val))
+
+    def modeStr(self):
+        return "111"
+
+    def regStr(self):
+        return "000"
 
 
 class AbsoluteLong(Memory):
     def __init__(self, data):
-        self.loc = data
+        self.val = data
         self.additionalsize = 4
 
     def __str__(self):
-        return "{}.l".format(hex(self.loc))
+        return "{}.l".format(hex(self.val))
+
+    def modeStr(self):
+        return "111"
+
+    def regStr(self):
+        return "001"
 
 
 class ImmediateData(Memory):
@@ -105,6 +163,12 @@ class ImmediateData(Memory):
 
     def __str__(self):
         return "#{}".format(self.val)
+
+    def modeStr(self):
+        return "111"
+
+    def regStr(self):
+        return "100"
 
     # | n(PC)             # PC with offset
     # | n(PC, Xn * SF)      # Scaled pc with offset
