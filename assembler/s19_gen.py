@@ -21,8 +21,6 @@ def s1_rec(data, loc):
     """
     Generates s1 records from a given address and a byte array
 
-    >>> s1_rec([0,0], 0)
-    'S10500000000FA'
 
     >>> s1_rec([int("00100000",2),int("00000000",2)], 0)
     'S10500000000FA'
