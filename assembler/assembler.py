@@ -40,17 +40,7 @@ class Assembler():
 
     def assembleBlocks(self):
         # for now, only assemble the first block
-        b = self.blocks[0]
-        loc = 0
-        data = ""
-        for x in b.instructions:
-            data += s19_gen.s1_rec(s19_gen.to_byte_array(int(x,
-                                                             2), 2), loc) + "\n"
-            loc += 2
-        data += s19_gen.s5_rec(len(b.instructions)) + "\n"
-        data += s19_gen.s9_rec(0)
-
-        self.assembled = data
+        self.assembled = self.blocks[0].instructions
 
 
 class Block():
@@ -118,8 +108,10 @@ def assembleMove(instr):
     bin_str = "00" + getSizeBitString(instr.opcode.data[1])
     bin_str += instr.mem_dest.regStr() + instr.mem_dest.modeStr()
     bin_str += instr.mem_src.modeStr() + instr.mem_src.regStr()
-    # todo extra data needs to be assembled
-    return [bin_str], ""
+    returnData = [bin_str]
+    if len(instr) > 2:
+        returnData += assembleExtraData(instr)
+    return returnData, ""
 
 
 def assembleMoveq(instr):
@@ -135,3 +127,17 @@ def assembleTrap(instr):
     assert(instr.mem_src.val < 16)
     bin_str += numToBitStr(instr.mem_src.val, 4)
     return [bin_str], ""
+
+
+def assembleExtraData(instr):
+    data = []
+    if instr.mem_src.additionalsize > 0:
+        new_dat = numToBitStr(instr.mem_src.extraData(),
+                              8 * instr.mem_src.additionalsize)
+        data += [new_dat[i:i + 16] for i in range(0, len(new_dat), 16)]
+
+    if instr.mem_dest.additionalsize > 0:
+        new_dat = numToBitStr(instr.mem_dest.extraData(),
+                              8 * instr.mem_dest.additionalsize)
+        data += [new_dat[i:i + 16] for i in range(0, len(new_dat), 16)]
+    return data

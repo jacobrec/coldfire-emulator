@@ -106,6 +106,9 @@ class AddressIndirectWithOffset(Memory):
     def regStr(self):
         return assembler.numToBitStr(self.num, 3)
 
+    def extraData(self):
+        return [self.offset]
+
 
 class ScaledAddressWithOffset(Memory):
     def __init__(self, addRegNum, reg2Num, reg2Type, scaleFactor, offset):
@@ -125,6 +128,12 @@ class ScaledAddressWithOffset(Memory):
     def regStr(self):
         return assembler.numToBitStr(self.num, 3)
 
+    def extraData(self):
+        print("##############################")
+        print("# Find out the order of this #")
+        print("##############################")
+        assert(0)
+
 
 class AbsoluteShort(Memory):
     def __init__(self, data):
@@ -139,6 +148,9 @@ class AbsoluteShort(Memory):
 
     def regStr(self):
         return "000"
+
+    def extraData(self):
+        return self.val
 
 
 class AbsoluteLong(Memory):
@@ -155,6 +167,9 @@ class AbsoluteLong(Memory):
     def regStr(self):
         return "001"
 
+    def extraData(self):
+        return self.val
+
 
 class ImmediateData(Memory):
     def __init__(self, data):
@@ -169,6 +184,9 @@ class ImmediateData(Memory):
 
     def regStr(self):
         return "100"
+
+    def extraData(self):
+        return self.val
 
     # | n(PC)             # PC with offset
     # | n(PC, Xn * SF)      # Scaled pc with offset

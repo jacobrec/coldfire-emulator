@@ -185,6 +185,9 @@ class Instruction:
             raise ParseError(
                 "Invalid memory access for instruction", self.opcode)
 
+    def __len__(self):
+        return self.size
+
     def __repr__(self):
         return str(self)
 
