@@ -1,5 +1,6 @@
 import parser
 from s19_gen import to_byte_array
+import s19_gen
 
 
 class Assembler():
@@ -16,12 +17,14 @@ class Assembler():
         self.source = instructions
         self.isBlocksAssembled = False
 
+        self.assembled = ""
+
     def assemble(self):
         if len(self.blocks) == 0:
             self.makeBlocks()
         if not self.isBlocksAssembled:
             self.assembleBlocks()
-        return self.blocks
+        return self.assembled
 
     def reset(self):
         self.blocks = []
@@ -33,10 +36,21 @@ class Assembler():
             if isinstance(instr, parser.Label) or (isinstance(instr, parser.Direct) and instr.directive.data == "org"):
                 self.blocks.append(block)
             else:
-                block.addInstruction(assembleInstruction(instr))
+                block.addInstructions(assembleInstruction(instr))
 
     def assembleBlocks(self):
-        pass
+        # for now, only assemble the first block
+        b = self.blocks[0]
+        loc = 0
+        data = ""
+        for x in b.instructions:
+            data += s19_gen.s1_rec(s19_gen.to_byte_array(int(x,
+                                                             2), 2), loc) + "\n"
+            loc += 2
+        data += s19_gen.s5_rec(len(b.instructions)) + "\n"
+        data += s19_gen.s9_rec(0)
+
+        self.assembled = data
 
 
 class Block():
@@ -48,8 +62,8 @@ class Block():
         self.instructions = []  # instructions
         self.name = ""  # name
 
-    def addInstruction(self, instr):
-        self.instructions.append(instr)
+    def addInstructions(self, instr):
+        self.instructions += instr
 
     def __repr__(self):
         return self.__str__()
@@ -86,25 +100,26 @@ def assembleInstruction(instr):
     err = "NOP"
 
     if instr.opcode.data[0] == "move":
-        bin_str, err = assembleMove(instr)
+        bin_strs, err = assembleMove(instr)
     elif instr.opcode.data[0] == "movea":
-        bin_str, err = assembleMove(instr)
+        bin_strs, err = assembleMove(instr)
     elif instr.opcode.data[0] == "moveq":
-        bin_str, err = assembleMoveq(instr)
+        bin_strs, err = assembleMoveq(instr)
     elif instr.opcode.data[0] == "trap":
-        bin_str, err = assembleTrap(instr)
+        bin_strs, err = assembleTrap(instr)
 
     if err == "NOP":
         return "None"
 
-    return bin_str
+    return bin_strs
 
 
 def assembleMove(instr):
     bin_str = "00" + getSizeBitString(instr.opcode.data[1])
     bin_str += instr.mem_dest.regStr() + instr.mem_dest.modeStr()
     bin_str += instr.mem_src.modeStr() + instr.mem_src.regStr()
-    return bin_str, ""
+    # todo extra data needs to be assembled
+    return [bin_str], ""
 
 
 def assembleMoveq(instr):
@@ -112,12 +127,11 @@ def assembleMoveq(instr):
     bin_str += instr.mem_dest.regStr() + "0"
     assert(instr.mem_src.val < 256)
     bin_str += numToBitStr(instr.mem_src.val, 8)
-
-    return bin_str, ""
+    return [bin_str], ""
 
 
 def assembleTrap(instr):
     bin_str = "010011100100"
     assert(instr.mem_src.val < 16)
     bin_str += numToBitStr(instr.mem_src.val, 4)
-    return bin_str, ""
+    return [bin_str], ""

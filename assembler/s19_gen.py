@@ -21,6 +21,12 @@ def s1_rec(data, loc):
     """
     Generates s1 records from a given address and a byte array
 
+    >>> s1_rec([0,0], 0)
+    'S10500000000FA'
+
+    >>> s1_rec([int("00100000",2),int("00000000",2)], 0)
+    'S10500000000FA'
+
     >>> s1_rec(to_byte_array("7C0802A6900100049421FFF07C6C1B787C8C23783C60000038630000"), 0)
     'S11F00007C0802A6900100049421FFF07C6C1B787C8C23783C6000003863000026'
 
@@ -124,7 +130,7 @@ def to_hex_string(num, minDigits=0):
     return s.upper()
 
 
-def to_byte_array(number):
+def to_byte_array(number, minDigits=0):
     """
     Converts number to a variable size array of bytes
 
@@ -147,6 +153,9 @@ def to_byte_array(number):
     while number != 0:
         byts.insert(0, number % 256)
         number = number // 256
+
+    if minDigits > len(byts):
+        s = [0] * (minDigits - len(byts)) + byts
 
     return byts
 
