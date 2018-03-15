@@ -1,15 +1,12 @@
 import parser
+import memory
 from s19_gen import to_byte_array
 import s19_gen
 
 
 class Assembler():
     """
-    a two pass assembler
 
-    first it goes through and deals with directive, and subdivides the instructions into blocks
-
-    Then, it goes through and assembles each block
     """
 
     def __init__(self, instructions):
@@ -33,15 +30,13 @@ class Assembler():
     def makeBlocks(self):
         block = Block()
         for instr in self.source:
-            if isinstance(
-                instr,
-                parser.Label) or (
-                isinstance(
-                    instr,
-                    parser.Direct) and instr.directive.data == "org"):
-                self.blocks.append(block)
+            if isinstance(instr, memory.Label):
+                block.addInstructions([symbolicLocation(instr.name, 0, False)])
+            elif isinstance(instr, parser.Direct):
+                pass
             else:
                 block.addInstructions(assembleInstruction(instr))
+        self.blocks = [block]
 
     def assembleBlocks(self):
         # for now, only assemble the first block
@@ -92,6 +87,7 @@ def assembleInstruction(instr):
         if else statement that calls other functions based on the op code
     """
 
+    # TODO: do something more elegent with this. maybe use decorators?
     if instr.opcode.data[0] == "move":
         bin_strs = assembleMove(instr)
     elif instr.opcode.data[0] == "movea":
@@ -102,6 +98,8 @@ def assembleInstruction(instr):
         bin_strs = assembleTrap(instr)
     elif instr.opcode.data[0] == "bra":
         bin_strs = assembleBra(instr)
+    elif instr.opcode.data[0] == "jmp":
+        bin_strs = assembleJmp(instr)
 
     return bin_strs
 
@@ -117,7 +115,13 @@ def assembleMove(instr):
 
 
 def assembleBra(instr):
-    return ["01100000", symbolicLocation(instr.mem_src.name, 8)]
+    return ["01100000", symbolicLocation(instr.mem_src.name, 8, True)]
+
+def assembleJmp(instr):
+    # TODO: allow more type for jump
+    ee = "111001" # Locked into absolute long mode for now
+    ed = symbolicLocation(instr.mem_src.name, 16, False)
+    return ["0100111011", ee, ed]
 
 
 def assembleMoveq(instr):
@@ -150,9 +154,10 @@ def assembleExtraData(instr):
 
 
 class symbolicLocation:
-    def __init__(self, name, size):
+    def __init__(self, name, size, isRelative):
         self.name = name
         self.size = size
+        self.isRelative = isRelative
 
     def __str__(self):
         return "({}, size:{})".format(self.name, self.size)

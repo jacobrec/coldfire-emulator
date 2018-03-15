@@ -3,6 +3,7 @@ from utils import assertAs
 from lexer import lex
 from parser import parse
 from assembler import assemble
+from linker import link
 from tokens import *
 
 
@@ -40,7 +41,9 @@ def assembleFile(f_in_name, f_out_name):
 
     ast = parse(toks)
     # print("\n".join([str(x) for x in ast]))
-    print(assemble(ast))
-
+    outFile = link([assemble(ast)])
+    with open(f_out_name, "w+") as f:
+        f.write(outFile)
+        f.write("\n")
 
 main()

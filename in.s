@@ -9,5 +9,9 @@ _start:
 move.l #49, %D1
 moveq.l #10, %D2
 trap #15
-bra _start
+bra end
 
+trap #15
+
+end:
+jmp _start
