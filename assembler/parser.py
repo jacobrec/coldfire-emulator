@@ -17,7 +17,8 @@ class Parser:
                 stmts.append(self._line())
             except ParseError as e:
                 self._sync()
-                print(e)  # TODO: deal with errors
+                if not e.tok.toktype is EOF: # deal with this better
+                    print(e)  # TODO: deal with errors
 
         return stmts
 ########### recursive descent parser ###########
