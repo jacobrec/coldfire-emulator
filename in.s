@@ -9,3 +9,5 @@ _start:
 move.l #49, %D1
 moveq.l #10, %D2
 trap #15
+bra _start
+

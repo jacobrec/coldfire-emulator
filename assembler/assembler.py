@@ -33,7 +33,12 @@ class Assembler():
     def makeBlocks(self):
         block = Block()
         for instr in self.source:
-            if isinstance(instr, parser.Label) or (isinstance(instr, parser.Direct) and instr.directive.data == "org"):
+            if isinstance(
+                instr,
+                parser.Label) or (
+                isinstance(
+                    instr,
+                    parser.Direct) and instr.directive.data == "org"):
                 self.blocks.append(block)
             else:
                 block.addInstructions(assembleInstruction(instr))
@@ -86,20 +91,17 @@ def assembleInstruction(instr):
         This is how it determines which instruction to assemble, it is a big
         if else statement that calls other functions based on the op code
     """
-    bin_str = "B"
-    err = "NOP"
 
     if instr.opcode.data[0] == "move":
-        bin_strs, err = assembleMove(instr)
+        bin_strs = assembleMove(instr)
     elif instr.opcode.data[0] == "movea":
-        bin_strs, err = assembleMove(instr)
+        bin_strs = assembleMove(instr)
     elif instr.opcode.data[0] == "moveq":
-        bin_strs, err = assembleMoveq(instr)
+        bin_strs = assembleMoveq(instr)
     elif instr.opcode.data[0] == "trap":
-        bin_strs, err = assembleTrap(instr)
-
-    if err == "NOP":
-        return "None"
+        bin_strs = assembleTrap(instr)
+    elif instr.opcode.data[0] == "bra":
+        bin_strs = assembleBra(instr)
 
     return bin_strs
 
@@ -111,7 +113,11 @@ def assembleMove(instr):
     returnData = [bin_str]
     if len(instr) > 2:
         returnData += assembleExtraData(instr)
-    return returnData, ""
+    return returnData
+
+
+def assembleBra(instr):
+    return ["01100000", symbolicLocation(instr.mem_src.name, 8)]
 
 
 def assembleMoveq(instr):
@@ -119,14 +125,14 @@ def assembleMoveq(instr):
     bin_str += instr.mem_dest.regStr() + "0"
     assert(instr.mem_src.val < 256)
     bin_str += numToBitStr(instr.mem_src.val, 8)
-    return [bin_str], ""
+    return [bin_str]
 
 
 def assembleTrap(instr):
     bin_str = "010011100100"
     assert(instr.mem_src.val < 16)
     bin_str += numToBitStr(instr.mem_src.val, 4)
-    return [bin_str], ""
+    return [bin_str]
 
 
 def assembleExtraData(instr):
@@ -141,3 +147,15 @@ def assembleExtraData(instr):
                               8 * instr.mem_dest.additionalsize)
         data += [new_dat[i:i + 16] for i in range(0, len(new_dat), 16)]
     return data
+
+
+class symbolicLocation:
+    def __init__(self, name, size):
+        self.name = name
+        self.size = size
+
+    def __str__(self):
+        return "({}, size:{})".format(self.name, self.size)
+
+    def __repr__(self):
+        return str(self)
