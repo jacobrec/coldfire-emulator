@@ -1,19 +1,12 @@
 import std.stdio;
 import std.file;
+import emulator;
 
 /**
  * Author: Jacob Reckhard, reckhard@ualberta.ca
  * Author: Jarrett Yu, jarrett@ualberta.ca
  * Date: March 15, 2018
  */
-
-
-void init(){
-}
-
-void run(){
-}
-
 
 void main(string[] args){
     writeln("Coldfire Emulator");
@@ -28,5 +21,6 @@ void main(string[] args){
         writeln("File <"~ args[1] ~"> not found.");
         return;
     }
-    auto data = readText(args[1]);
+    Coldfire emulator = new Coldfire();
+    emulator.loadFile(args[1]);
 }
