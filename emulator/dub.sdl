@@ -1,0 +1,5 @@
+name "coldfire-emulator"
+description "An emulator for the coldfire microprocessor."
+authors "Jacob Reckhard"
+copyright "Copyright © 2018, Jacob Reckhard"
+license "Unlicenced"
