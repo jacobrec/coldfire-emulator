@@ -13,4 +13,6 @@ struct Cpu{
     ushort CCR;
     char[1024*64] ram;
     uint pc;
+
+    ushort opcode;
 }
