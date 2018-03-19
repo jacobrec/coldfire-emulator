@@ -22,16 +22,16 @@ def s1_rec(data, loc):
     Generates s1 records from a given address and a byte array
 
 
-    >>> s1_rec([int("00100000",2),int("00000000",2)], 0)
+    >>> s1_rec([int("00000000",2),int("00000000",2)], 0)
     'S10500000000FA'
 
-    >>> s1_rec(to_byte_array("7C0802A6900100049421FFF07C6C1B787C8C23783C60000038630000"), 0)
+    >>> s1_rec([124, 8, 2, 166, 144, 1, 0, 4, 148, 33, 255, 240, 124, 108, 27, 120, 124, 140, 35, 120, 60, 96, 0, 0, 56, 99, 0, 0], 0)
     'S11F00007C0802A6900100049421FFF07C6C1B787C8C23783C6000003863000026'
 
-    >>> s1_rec(to_byte_array("4BFFFFE5398000007D83637880010014382100107C0803A64E800020"), int("001C", 16))
+    >>> s1_rec([75, 255, 255, 229, 57, 128, 0, 0, 125, 131, 99, 120, 128, 1, 0, 20, 56, 33, 0, 16, 124, 8, 3, 166, 78, 128, 0, 32], int("001C", 16))
     'S11F001C4BFFFFE5398000007D83637880010014382100107C0803A64E800020E9'
 
-    >>> s1_rec(to_byte_array("48656C6C6F20776F726C642E0A00"), int("0038", 16))
+    >>> s1_rec([72, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 46, 10, 0], int("0038", 16))
     'S111003848656C6C6F20776F726C642E0A0042'
     """
 
@@ -119,10 +119,12 @@ def to_hex_string(num, minDigits=0):
     >>> to_hex_string(0, 4)
     '0000'
     """
-    if isinstance(num, int):
+    if isinstance(num, int) or isinstance(num, long):
         s = hex(num)[2:]
         if minDigits > len(s):
             s = "0" * (minDigits - len(s)) + s
+        if s.endswith('L') or s.endswith('l'):
+            s = s[:-1]
     else:
         s = "".join([to_hex_string(x, 2) for x in num])
     return s.upper()

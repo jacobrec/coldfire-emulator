@@ -101,7 +101,7 @@ class AddressIndirectWithOffset(Memory):
         return "{1}(%A{0})".format(self.num, self.offset)
 
     def modeStr(self):
-        return "01"
+        return "101"
 
     def regStr(self):
         return assembler.numToBitStr(self.num, 3)
