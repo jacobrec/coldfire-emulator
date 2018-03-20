@@ -11,7 +11,7 @@ struct Cpu{
     int[8] A;
     int[8] D;
     ushort CCR;
-    char[1024*64] ram;
+    ubyte[1024*64] ram;
     uint pc;
 
     ushort opcode;

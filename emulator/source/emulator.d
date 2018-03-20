@@ -34,8 +34,7 @@ class Coldfire{
      * the chip's memory.
      */
     void loadFile(string filepath){
-        auto data = readText(filepath);
-        parseFile(filepath, this.chip.memory, this.chip.pc);
+        parseFile(filepath, this.chip.ram, this.chip.pc);
     }
 
 

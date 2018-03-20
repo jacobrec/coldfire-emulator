@@ -4,7 +4,7 @@ import std.string;
 /**
  * A convinance function, creates a new fileLoader, and loads the file
  */
-void parseFile(string filepath, ref ubyte[64*1024] memory, ref ushort pc){
+void parseFile(string filepath, ref ubyte[64*1024] memory, ref uint pc){
     FileLoader fl = new FileLoader();
     fl.parseFile(filepath, memory, pc);
 }
@@ -18,13 +18,13 @@ void parseFile(string filepath, ref ubyte[64*1024] memory, ref ushort pc){
 class FileLoader{
 
     ubyte[64*1024] memory;
-    ushort startLoc;
+    uint startLoc;
 
 
-    void parseFile(string filepath, ref ubyte[64*1024] memory, ref ushort pc){
+    void parseFile(string filepath, ref ubyte[64*1024] memory, ref uint pc){
         auto data = readText(filepath);
-        auto lines = split(data, '\n');
-        foreach(auto line; lines){
+        string[] lines = split(data, '\n');
+        foreach(string line; lines){
             char indicator = line[1];
             switch(indicator){
                 case '1':
@@ -79,7 +79,7 @@ class FileLoader{
         assert(record[0] == 'S');
         assert(record[1] == '9');
 
-        this.startLoc = to!ushort(record[4..8], 16);
+        this.startLoc = to!uint(record[4..8], 16);
     }
 }
 unittest{
