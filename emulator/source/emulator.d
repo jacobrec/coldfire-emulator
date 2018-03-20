@@ -1,4 +1,5 @@
 import cpu;
+import fileLoader;
 
 class Coldfire{
     Cpu chip;
@@ -34,26 +35,29 @@ class Coldfire{
      */
     void loadFile(string filepath){
         auto data = readText(filepath);
-        // TODO: parsing of s19 file
+        parseFile(filepath, this.chip.memory, this.chip.pc);
     }
 
 
+
+
+
     /**
-      * Decodes the instruction and returns a function to mimic
-      * the execution of the instruction.
-      *
-      * The function that it returns will be held in a table of functions
-      * and this will just refernce that.
-      */
+     * Decodes the instruction and returns a function to mimic
+     * the execution of the instruction.
+     *
+     * The function that it returns will be held in a table of functions
+     * and this will just refernce that.
+     */
     void function(ref Cpu) placeholder;
     ref void function(ref Cpu) decode(){
         return placeholder;
     }
 
     /**
-      * Sets the next opcode from the cpu to decode
-      * The opcode is stored in chip.opcode
-      */
+     * Sets the next opcode from the cpu to decode
+     * The opcode is stored in chip.opcode
+     */
     void fetch(){
         chip.opcode = chip.ram[chip.pc];
         chip.pc -= 2;

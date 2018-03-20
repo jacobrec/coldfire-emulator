@@ -1,6 +1,14 @@
 import std.conv;
 import std.file;
 import std.string;
+/**
+ * A convinance function, creates a new fileLoader, and loads the file
+ */
+void parseFile(string filepath, ref ubyte[64*1024] memory, ref ushort pc){
+    FileLoader fl = new FileLoader();
+    fl.parseFile(filepath, memory, pc);
+}
+
 
 /**
  * A class to load srec files
