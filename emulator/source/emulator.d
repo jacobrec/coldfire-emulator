@@ -1,6 +1,9 @@
 import cpu;
 import fileLoader;
-
+/**
+  * Coldfire is the system to be emulated, this holds the fetch, decode, exucute loop
+  * as well as the cpu which is passed to the decoded functions a refernce
+  */
 class Coldfire{
     Cpu chip;
 
