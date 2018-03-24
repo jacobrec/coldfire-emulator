@@ -2,6 +2,7 @@ import parser
 import memory
 from s19_gen import to_byte_array
 import s19_gen
+import instructions_extended
 
 
 class Assembler():
