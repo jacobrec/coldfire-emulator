@@ -101,7 +101,15 @@ def assembleInstruction(instr):
         bin_strs = assembleBra(instr)
     elif instr.opcode.data[0] == "jmp":
         bin_strs = assembleJmp(instr)
-
+    '''
+    Proposal for new technique: (need to import string)
+    instrDict = {
+    "move"    : assembleMove
+    "movea"   : assembleMove
+    "moveq"   : assembleMoveq
+    }
+    return instrDict[instr.opcode.data[0]](instr)
+    '''
     return bin_strs
 
 
