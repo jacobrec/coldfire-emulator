@@ -71,3 +71,47 @@ def assembleAs(instr):
             bin_str += "1"
         bin_str += "10000"
     return [bin_str]
+
+def assembleBcc(instr):
+    conditions = {
+    "true"  : "0000"
+    "false" : "0001"
+    "high"  : "0010"
+    "low/=" : "0011"
+    "cClear": "0100"
+    "cSet"  : "0101"
+    "NE"    : "0110"
+    "EQ"    : "0111"
+    "VC"  : "1000"
+    "VS" : "1001"
+    "PL"  : "1010"
+    "MI" : "1011"
+    "GE": "1100"
+    "LT"  : "1101"
+    "GT"    : "1110"
+    "LE"    : "1111"
+    }
+
+    '''
+    needs to reference, "0000" if filler for conditions
+    '''
+    bin_str = "0110" + "0000"
+    return [bin_str, ymbolicLocation(instr.mem_src.name, 8, True)]
+
+def assembleIllegal(instr):
+    return ["0100101011111100"]
+
+def assembleNop(instr):
+    return ["0100111001110001"]
+
+def assembleNot(instr):
+    return ["0100011010000" + instr.mem_dest.regStr()]
+
+def assembleRts(instr):
+    return ["0100111001110101"]
+
+def assembleStop(instr):
+    return ["0100111001110010"]
+    
+def assembleSwap(instr):
+    return ["0100100001000" + instr.mem_dest.regStr()]
