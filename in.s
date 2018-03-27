@@ -1,3 +1,4 @@
+_start:
 move.l #1, %D0
 move.l #2, %D1
 move.l #3, %D2
