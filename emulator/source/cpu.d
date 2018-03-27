@@ -1,3 +1,5 @@
+module cpu;
+
 /**
  * The coldfire cpu
  *

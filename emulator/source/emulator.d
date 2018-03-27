@@ -1,18 +1,19 @@
+module emulator;
+
 import cpu;
 import fileLoader;
+import instructions.instructions;
 /**
   * Coldfire is the system to be emulated, this holds the fetch, decode, exucute loop
-  * as well as the cpu which is passed to the decoded functions a refernce
+  * as well as the cpu which is passed to the decoded functions as a refernce
   */
 class Coldfire{
     Cpu chip;
+    instruction[ushort] funTable;
 
     this(){
         chip = Cpu();
-
-        while(true){
-            run();
-        }
+        funTable = getInstructionMap();
     }
 
 
@@ -51,9 +52,8 @@ class Coldfire{
      * The function that it returns will be held in a table of functions
      * and this will just refernce that.
      */
-    void function(ref Cpu) placeholder;
-    ref void function(ref Cpu) decode(){
-        return placeholder;
+    instruction decode(){
+        return funTable[this.chip.opcode];
     }
 
     /**

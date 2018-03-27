@@ -1,5 +1,9 @@
+module app;
+
 import std.stdio;
 import std.file;
+import core.stdc.stdlib;
+
 import emulator;
 
 /**
@@ -9,8 +13,10 @@ import emulator;
  */
 
 void main(string[] args){
-    writeln("Coldfire Emulator");
-    writeln("2018 Dave");
+    writeln("############################################");
+    writeln("########      Coldfire Emulator     ########");
+    writeln("# For when you are too lazy to walk up the #\n# five flights of stairs to test your code #");
+    writeln("############################################");
 
     if (args.length < 2 || args.length >= 3){
         writeln("Usage: dub -- <filename>");
@@ -23,4 +29,6 @@ void main(string[] args){
     }
     Coldfire emulator = new Coldfire();
     emulator.loadFile(args[1]);
+    writeln("Exiting emulator");
+    exit(0);
 }

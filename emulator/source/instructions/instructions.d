@@ -1,9 +1,18 @@
+module instructions.instructions;
+
 import cpu;
 import std.conv;
+import std.regex;
+import instructions.math;
+import instructions.move;
+import instructions.bits;
+import instructions.other;
+import instructions.branch;
+
 
 alias instruction = void function(Cpu chip);
 immutable ushort instruction_length = 16;
-pure instruction[ushort] getInstructionMap(){
+instruction[ushort] getInstructionMap(){
     instruction[ushort] cached;
     for (ushort i = 0; i < 0xFFFF; i++) {
         cached[i] = getInstruction(i);
@@ -11,7 +20,16 @@ pure instruction[ushort] getInstructionMap(){
     return cached;
 }
 
-pure instruction getInstruction(ushort instr){
+instruction getInstruction(ushort instr){
+    if (     matches(instr, "1101 ...1 10.. ....")){
+        return &add;
+    }else if(matches(instr, "1011 ...0 .... ....")){
+        return &cmp;
+    }else if(matches(instr, "0100 1110 0100 ....")){
+        return &trap;
+    }else if(matches(instr, "00.. .... .... ....")){
+        return &move;
+    }
     return null;
 }
 
@@ -24,7 +42,8 @@ pure instruction getInstruction(ushort instr){
  * all charactors are either 0, 1, or ., if . the operator
  * can have the bit set or not
  */
-bool matches(ushort op, string guess){
+bool matches(ushort op, string match_string){
+    auto guess = replaceAll(match_string, regex(r"\s","g"), "");
     assert(guess.length == instruction_length);
     for(int i = 0; i < instruction_length; i++){
         if(guess[i] != '.'){ // the thing is a dot, then that matches
@@ -44,4 +63,6 @@ unittest{
     assert(!matches(0b1111000011110000u, "1011000011110000"));
     assert(!matches(0b0000000000000000u, "0000000000000001"));
     assert(matches(0b1101010011101101u, "1101..0.111.1101"));
+    assert(matches(0b1101010011101101u, "1101. .0.111. 1101"));
+    assert(matches(0b1101010011101101u, "1101..0. 111.1101"));
 }

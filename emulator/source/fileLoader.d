@@ -25,6 +25,9 @@ class FileLoader{
         auto data = readText(filepath);
         string[] lines = split(data, '\n');
         foreach(string line; lines){
+            if (line.length < 2){
+                continue;
+            }
             char indicator = line[1];
             switch(indicator){
                 case '1':
