@@ -87,7 +87,7 @@ def assembleInstruction(instr):
         This is how it determines which instruction to assemble, it is a big
         if else statement that calls other functions based on the op code
     """
-
+    bin_strs = ""
     # TODO: do something more elegent with this. maybe use decorators?
     if instr.opcode.data[0] == "move":
         bin_strs = assembleMove(instr)
