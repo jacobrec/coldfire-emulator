@@ -27,7 +27,6 @@ Our emulator emulates a subset of the coldfire instructions. The goal is all the
 
 What it will support is all the instructions learned in ECE 212, as well as nice debugging support. Breakpoints and stepping for sure, as well as viewing memory dumps, and register values. If there is time, I would like to add in a graphical debugging tool too, but that's a stretch.
 
-- Side note. I know this course has a focus on python, but ideally I would like to write this not in python, but a language with finer control over memory and individual bits. And we already are doing the assembler in python. So would it be possible to write this emulator in another language? Preferably D, but possibly C++. D would be my preference as it allows for the same fine memory control as C, but with niceties of modern languages, like built in testing solutions, really nice OOP support, easy support for multithreading, and easy to use graphics libraries for if there's time to add in the graphical debugger. So, would we be allowed to write the emulator in D? And if not, would we be allowed to write the emulator in C++? Since we did learn that language in class last semester.
 
 
 ## How to use
