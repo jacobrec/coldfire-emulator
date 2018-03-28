@@ -15,7 +15,8 @@ import emulator;
 void main(string[] args){
     writeln("############################################");
     writeln("########      Coldfire Emulator     ########");
-    writeln("# For when you are too lazy to walk up the #\n# five flights of stairs to test your code #");
+    writeln("# For when you are too lazy to walk up the #");
+    writeln("# five flights of stairs to test your code #");
     writeln("############################################");
 
     if (args.length < 2 || args.length >= 3){
