@@ -5,6 +5,6 @@ import instructions.instructions;
 
 
 
-void cmp(Cpu chip){
+void cmp(ref Cpu chip){
     
 }

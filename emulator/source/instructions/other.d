@@ -4,6 +4,6 @@ import cpu;
 import instructions.instructions;
 
 
-void trap(Cpu chip){
+void trap(ref Cpu chip){
     
 }

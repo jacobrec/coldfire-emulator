@@ -98,7 +98,6 @@ int* getMem(ref Cpu chip, ubyte mode, ubyte reg, ubyte size){
                     // TODO: PC scaled
                     break;
                 case 0b100: // This will return a literal that is the next 4 bytes
-                    // TODO: find a more effecient way to do this
                     chip.text[++chip.tp] = *(cast(int*) &chip.ram[chip.pc]);
                     chip.pc += 4;
                     mem_loc = &chip.text[chip.tp];
@@ -178,7 +177,7 @@ unittest{
     assert(*getDest(chip, 0b011000) == 3);
     assert(*getDest(chip, 0b111001) == 7);
     assert(*getDest(chip, 0b001001) == 1);
-    assert(*getDest(chip, 0b000010) == 0x03020100); // is this the right Endian?
+    assert(*getDest(chip, 0b000010) == 0x03020100);
 
 
     // testing direct, indirect and pre and post increment
@@ -246,6 +245,7 @@ unittest{
     assert_eq(chip.pc, 102);
 
 
+    // testing write
     chip.pc = 98;
     chip.ram[98] = 0;
     chip.ram[99] = 0;
@@ -267,4 +267,30 @@ unittest{
 
     assert_eq(chip.ram[2], 0x49); 
     assert_eq(chip.ram[1], 0x49); 
+
+
+    // testing write
+
+    chip.ram[0] = 0;
+    chip.A[0] = 0;
+    chip.D[0] = 31;
+
+    writeLoc(getMem(chip, 0b011, 0b000, SIZE_BYTE), SIZE_BYTE, getMem(chip, 0b000, 0b000, SIZE_BYTE));
+
+    assert_eq(chip.A[0], 1);
+    assert_eq(chip.D[0], chip.ram[0]);
+
+    // testing write
+
+    chip.ram[0] = 0;
+    chip.A[0] = 0;
+    chip.D[0] = 49;
+
+        
+    writeLoc(getDest(chip, 0b000011, SIZE_BYTE), SIZE_BYTE, getSource(chip, 0b000000, SIZE_BYTE));
+
+    assert_eq(chip.A[0], 1);
+    assert_eq(chip.D[0], chip.ram[0]);
+
+
 }

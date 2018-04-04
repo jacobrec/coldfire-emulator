@@ -5,6 +5,6 @@ import instructions.instructions;
 
 
 
-void add(Cpu chip){
+void add(ref Cpu chip){
     
 }
