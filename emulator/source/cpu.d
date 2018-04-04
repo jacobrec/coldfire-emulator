@@ -118,12 +118,12 @@ int* getMem(ref Cpu chip, ubyte mode, ubyte reg, ubyte size){
     return mem_loc;
 }
 
-int* getSource(Cpu chip, ubyte bits, ubyte size = SIZE_BYTE){
+int* getSource(ref Cpu chip, ubyte bits, ubyte size = SIZE_BYTE){
     ubyte reg = bits & 0b111;
     ubyte mode = (bits & 0b111000) >> 3;
     return getMem(chip, mode, reg, size);
 }
-int* getDest(Cpu chip, ubyte bits, ubyte size = SIZE_BYTE){
+int* getDest(ref Cpu chip, ubyte bits, ubyte size = SIZE_BYTE){
     ubyte mode = bits & 0b111;
     ubyte reg = (bits & 0b111000) >> 3;
     return getMem(chip, mode, reg, size);
@@ -142,11 +142,23 @@ int readLoc(int* loc, ubyte size){
     }
 
 }
+void writeLoc(int* loc, ubyte size, int* data){
+    if(size == SIZE_BYTE){
+        *loc &= 0xFFFFFF00;
+        *loc |= (*data) & 0x000000FF;
+    }else if (size == SIZE_LONG){
+        *loc &= 0x00000000;
+        *loc |= (*data) & 0xFFFFFFFF;
+    }else{
+        *loc &= 0xFFFF0000;
+        *loc |= (*data) & 0x0000FFFF;
+    }
+}
 
 void assert_eq(int a, int b){
     if(a != b){
         import std.stdio;
-        writef("%X != %X\n", a, b);
+        writef("0x%X(%d) != 0x%X(%d)\n", a,a, b,b);
         assert(0);
     }
 }
@@ -232,4 +244,27 @@ unittest{
     chip.ram[101] = 1;
     assert_eq(readLoc(getMem(chip, 0b111, 0b001, SIZE_LONG), SIZE_BYTE), 0x49);
     assert_eq(chip.pc, 102);
+
+
+    chip.pc = 98;
+    chip.ram[98] = 0;
+    chip.ram[99] = 0;
+    chip.ram[100] = 0;
+    chip.ram[101] = 2;
+    chip.ram[102] = 0;
+    chip.ram[103] = 0;
+    chip.ram[104] = 0;
+    chip.ram[105] = 1;
+
+    chip.ram[1] = 0x49;
+    chip.ram[2] = 0;
+
+    assert_eq(readLoc(getMem(chip, 0b111, 0b001, SIZE_LONG), SIZE_BYTE), 0x0);
+    assert_eq(chip.pc, 102);
+    assert_eq(readLoc(getMem(chip, 0b111, 0b001, SIZE_LONG), SIZE_BYTE), 0x49);
+    chip.pc = 98;
+    writeLoc(getDest(chip, 0b001111), SIZE_BYTE, getSource(chip, 0b111001));
+
+    assert_eq(chip.ram[2], 0x49); 
+    assert_eq(chip.ram[1], 0x49); 
 }
