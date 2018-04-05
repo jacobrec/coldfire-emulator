@@ -88,12 +88,13 @@ void printMemory(ref Cpu chip, int fromByte, int totalBytes){
     import std.stdio;
     int b = 0;
     while(b < totalBytes){
-        for(int i = 0; i < 16; i++){
+        for(int i = 0; i < 8; i++){
             writef("0x%X\t", chip.ram[b + fromByte]); 
-            totalBytes--;
+            b++;
         }
         writeln();
     }
+    writeln();
 }
 
 unittest{

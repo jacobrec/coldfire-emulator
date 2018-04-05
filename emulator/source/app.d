@@ -32,7 +32,7 @@ void main(string[] args){
     Coldfire emulator = new Coldfire();
     emulator.loadFile(args[1]);
     
-    printMemory(emulator.chip, 0, 64);
+    printMemory(emulator.chip, 0, 24);
     for(int i = 0; i < 10000; i++){
         emulator.run();
     }

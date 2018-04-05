@@ -64,7 +64,7 @@ class Coldfire{
      * The opcode is stored in chip.opcode
      */
     void fetch(){
-        chip.opcode = chip.ram[chip.pc];
+        chip.opcode = swapEndien(*(cast(ushort*) &chip.ram[chip.pc]));
         chip.pc -= 2;
     }
 }

@@ -40,6 +40,10 @@ class FileLoader{
                     // ignore s5 records and all other records
             }
         }
+        for(int i = 0; i < 64*1024; i++){
+            memory[i] = this.memory[i];
+        }
+        pc = this.startLoc;
     }
 
 
