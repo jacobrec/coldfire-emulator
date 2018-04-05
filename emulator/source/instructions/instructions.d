@@ -25,6 +25,8 @@ instruction getInstruction(ushort instr){
         return &add;
     }else if(matches(instr, "1011 ...0 .... ....")){
         return &cmp;
+    }else if(matches(instr, "0110 .... .... ....")){
+        return &bcc;
     }else if(matches(instr, "0100 1110 0100 ....")){
         return &trap;
     }else if(matches(instr, "00.. .... .... ....")){

@@ -8,9 +8,9 @@ import instructions.instructions;
 void add(ref Cpu chip){
     assert(matches(chip.opcode, "1101 ... . 10 ......"));
 
-    ubyte data =cast(ubyte) getBits(chip.opcode, 4, 3);
+    ubyte data = cast(ubyte) getBits(chip.opcode, 4, 3);
     ubyte other = cast(ubyte)getBits(chip.opcode, 10, 6);
-    ubyte incoming =cast(ubyte) getBits(chip.opcode, 7, 1);
+    ubyte incoming = cast(ubyte) getBits(chip.opcode, 7, 1);
 
     int* src;
     int* dst;
@@ -50,7 +50,7 @@ unittest{
 
     chip.ram[3] = 5;
     chip.pc = 4;
-    instr = 0b1101_000_110_001111; // Add 0x0 to d0 and store in 0x0
+    instr = 0b1101_000_110_111001; // Add 0x0 to d0 and store in 0x0
     chip.opcode = instr;
     add(chip);
     assert_eq(chip.pc, 8);
