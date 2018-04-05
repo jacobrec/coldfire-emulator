@@ -104,9 +104,55 @@ def assembleInstruction(instr):
     '''
     Proposal for new technique: (need to import string)
     instrDict = {
-    "move"    : assembleMove
-    "movea"   : assembleMove
-    "moveq"   : assembleMoveq
+    "move"    : assembleMove,
+    "movea"   : assembleMove,
+    "moveq"   : assembleMoveq,
+    "add"     : assembleAdd,
+    "adda"    : assembleAddA,
+    "addi"    : assembleAddI,
+    "addq"    : assembleAddQ,
+    "addx"    : assembleAddX,
+    "and"     : assembleAnd,
+    "andi"    : assembleAndI,
+    "asl"     : assembleAsL,
+    "asr"     : assembleAsR,
+    "bt"      : assembleBt,
+    "bf"      : assembleBf,
+    "bhi"     : assembleBhi,
+    "bls"     : assembleBls,
+    "bcc"     : assembleBcc,
+    "bcs"     : assembleBcs,
+    "bne"     : assembleBne,
+    "beq"     : assembleBeq,
+    "bvc"     : assembleBvc,
+    "bvs"     : assembleBvs,
+    "bpl"     : assembleBpl,
+    "bmi"     : assembleBmi,
+    "bge"     : assembleBge,
+    "blt"     : assembleBlt,
+    "bgt"     : assembleBgt,
+    "ble"     : assembleBle,
+    "bchg"    : assembleBchg,
+    "bclr"    : assembleBclr,
+    "bitrev"  : assembleBitrev,
+    "bra"     : assembleBra,
+    "bset"    : assembleBset,
+    "btst"    : assembleBtst,
+    "byterev" : assembleByterev,
+    "clr"     : assembleClr,
+    "cmp"     : assembleCmp,
+    "cmpa"    : assembleCmpA,
+    "cmpi"    : assembleCmpI,
+    "divs"    : assembleDivs,
+    "divu"    : assembleDivu,
+    "eor"     : assembleEor,
+    "eori"    : assembleEorI,
+    "ext"     : assembleExt,
+    "illegal" : assembleIllegal,
+    "lea"     : assembleLea,
+    "link"    : assembleLink,
+    "lsl"     : assembleLsl,
+    "lsr"     : assembleLsr
     }
     return instrDict[instr.opcode.data[0]](instr)
     '''
@@ -124,6 +170,7 @@ def assembleMove(instr):
 
 
 def assembleBra(instr):
+    # TODO: needs to have 16 or 32 bit displacement too
     return ["01100000", symbolicLocation(instr.mem_src.name, 8, True)]
 
 def assembleJmp(instr):
@@ -161,6 +208,13 @@ def assembleExtraData(instr):
         data += [new_dat[i:i + 16] for i in range(0, len(new_dat), 16)]
     return data
 
+def assembleImmediateData(mem):
+    data = None
+    if mem.regStr() == "000":  # abs short
+        data = numToBitStr(mem.val, 16, True)
+    elif mem.regStr() == "001":  # abs long
+        data = numToBitStr(mem.val, 32, True)
+    return data
 
 class symbolicLocation:
     def __init__(self, name, size, isRelative):
