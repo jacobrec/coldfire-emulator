@@ -237,7 +237,7 @@ def assembleIllegal(instr):
     return ["0100101011111100"]
 
 def assembleJsr(instr):
-    bin_str = "0100111010" + instr.mem_src.modeStr() + instr.mem_src.regStr()]
+    bin_str = "0100111010" + instr.mem_src.modeStr() + instr.mem_src.regStr()
     returnData = [bin_str]
     if len(instr) > 2:  # for extra bits in case
         returnData += assembleExtraData(instr)
