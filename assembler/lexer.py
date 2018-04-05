@@ -90,9 +90,13 @@ class Lexer:
             while c != "\n":
                 c = self._advance()
             self.line += 1
+            if not (self.toks[-1].toktype is Terminator):
+                self._addTok(Terminator)
         elif (c == "/") and (self._peek() == "*"):
             while not ((c == "*") and (self._peek() == "/")):
                 if c == "\n":
+                    if not (self.toks[-1].toktype is Terminator):
+                        self._addTok(Terminator)
                     self.line += 1
                 c = self._advance()
             self._advance()
