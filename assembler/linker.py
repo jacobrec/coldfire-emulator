@@ -35,15 +35,36 @@ def link(objects):
 def symLoc(loc, sym):
     return bin(((1 << sym.size) -1) & loc)[2:].zfill(sym.size)
 
+
+def toByteArray(binStr):
+    """
+    converts to bytes while preserving leading 0s
+    
+    >>> toByteArray("000000000000000000000000")
+    [0, 0, 0]
+    """
+
+    a = []
+    d = [binStr[i:i+8] for i in range(0, len(binStr), 8)]
+    for b in d:
+        a.append(int(b))
+
+    return a
+
 def s19File(startLoc, data):
     n = 64 # Split data into 64 bit blocks for s19 file
     d = [data[i:i+n] for i in range(0, len(data), n)]
     loc = 0
     s19 = []
     for b in d:
-        s19.append(s19_gen.s1_rec(int(b), loc))
+        s19.append(s19_gen.s1_rec(toByteArray(b), loc))
         loc += 64
     s19.append(s19_gen.s5_rec(len(d)))
     s19.append(s19_gen.s9_rec(startLoc))
 
     return("\n".join(s19))
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()

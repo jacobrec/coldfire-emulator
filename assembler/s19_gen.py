@@ -28,6 +28,9 @@ def s1_rec(data, loc):
     >>> s1_rec(15, 0)
     'S10400000FEC'
 
+    >>> s1_rec([0, 0, 0], 0)
+    'S1060000000000F9'
+
     >>> s1_rec(0xCCC, 0)
     'S10500000CCC22'
 
@@ -43,9 +46,10 @@ def s1_rec(data, loc):
 
     addr = to_hex_string(loc, 4)
     byts = to_hex_string(data)
-    byts = to_hex_string(data, (len(byts)+1)//2 * 2)
+    byts = to_hex_string(data, ((len(byts) + 1) // 2) * 2)
     size = len(byts) + len(addr) + 2
 
+    assert(size % 2 == 0)
     size = size // 2
 
     checksum = get_checksum(size, to_byte_array(addr + byts))
@@ -69,7 +73,8 @@ def s5_rec(num):
     size = 3
     checksum = get_checksum(size, data)
 
-    return "S5{}{}{}".format(to_hex_string(size, 2), "".join([to_hex_string(x, 2) for x in data]), checksum)
+    return "S5{}{}{}".format(to_hex_string(size, 2), "".join(
+        [to_hex_string(x, 2) for x in data]), checksum)
 
 
 def s9_rec(address):
@@ -85,7 +90,8 @@ def s9_rec(address):
     size = 3
     checksum = get_checksum(size, data)
 
-    return "S9{}{}{}".format(to_hex_string(size, 2), "".join([to_hex_string(x, 2) for x in data]), checksum)
+    return "S9{}{}{}".format(to_hex_string(size, 2), "".join(
+        [to_hex_string(x, 2) for x in data]), checksum)
 
 
 def get_checksum(size, data):
@@ -123,6 +129,9 @@ def to_hex_string(num, minDigits=0):
     >>> to_hex_string([1, 1])
     '0101'
 
+    >>> to_hex_string([0, 0, 0])
+    '000000'
+
     >>> to_hex_string(0, 4)
     '0000'
     """
@@ -134,6 +143,8 @@ def to_hex_string(num, minDigits=0):
             s = s[:-1]
     else:
         s = "".join([to_hex_string(x, 2) for x in num])
+        if minDigits > len(s):
+            s = "0" * (minDigits - len(s)) + s
     return s.upper()
 
 
