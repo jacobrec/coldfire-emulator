@@ -16,7 +16,7 @@ void add(ref Cpu chip){
     int* dst;
     if(incoming == 1){
         src = getMem(chip, 0b000, data, SIZE_LONG);
-        dst = getDest(chip, other, SIZE_LONG);
+        dst = getSource(chip, other, SIZE_LONG);
     }else{
         src = getSource(chip, other, SIZE_LONG);
         dst = getMem(chip, 0b000, data, SIZE_LONG);

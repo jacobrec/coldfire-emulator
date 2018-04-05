@@ -21,7 +21,7 @@ instruction[ushort] getInstructionMap(){
 }
 
 instruction getInstruction(ushort instr){
-    if (     matches(instr, "1101 ...1 10.. ....")){
+    if (     matches(instr, "1101 .... 10.. ....")){
         return &add;
     }else if(matches(instr, "1011 ...0 .... ....")){
         return &cmp;

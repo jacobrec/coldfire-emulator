@@ -47,7 +47,7 @@ def toByteArray(binStr):
     a = []
     d = [binStr[i:i+8] for i in range(0, len(binStr), 8)]
     for b in d:
-        a.append(int(b))
+        a.append(int(b, 2))
 
     return a
 
@@ -58,7 +58,7 @@ def s19File(startLoc, data):
     s19 = []
     for b in d:
         s19.append(s19_gen.s1_rec(toByteArray(b), loc))
-        loc += 64
+        loc += n / 8 # 8 bits per byte
     s19.append(s19_gen.s5_rec(len(d)))
     s19.append(s19_gen.s9_rec(startLoc))
 

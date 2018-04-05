@@ -24,19 +24,19 @@ void trap(ref Cpu chip){
 void trap9(ref Cpu chip){
     import std.stdio;
     import std.c.stdlib;
-    writeln("Exiting...");
-    printRegisters(chip);
+    writeln("Exiting(Trap 9)...");
+    //printRegisters(chip);
     exit(0);
 }
 
 void trap15(ref Cpu chip){
     import std.stdio;
-    switch(chip.D[0]){
-        case 15:
-            writeln(get_number_string(chip.D[1], chip.D[2]));
+    switch(swapEndien(chip.D[0])){
+        case 0x0F:
+            writeln(get_number_string(swapEndien(chip.D[1]), swapEndien(chip.D[2])));
             break;
         default:
-            writef("Error, trap #15 task %d is not defined\n", chip.D[0]);
+            writef("Error, trap #15 task %d(%X) is not defined\n", chip.D[0],chip.D[0]);
             assert(0);
     }
 
@@ -45,6 +45,7 @@ void trap15(ref Cpu chip){
 immutable string basechars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 string get_number_string(int num, int base){
     string ans = "";
+    assert(2 <= base && base <= 36);
     while (num > 0){
         ans = basechars[num % base] ~ ans;
         num /= base;

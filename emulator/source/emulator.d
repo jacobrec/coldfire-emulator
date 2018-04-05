@@ -25,9 +25,7 @@ class Coldfire{
      */
     void run(){
 
-        import std.stdio;
         fetch();
-        writef("0x%X\n", chip.opcode);
         decode()(chip);
     }
 
@@ -65,7 +63,7 @@ class Coldfire{
      */
     void fetch(){
         chip.opcode = swapEndien(*(cast(ushort*) &chip.ram[chip.pc]));
-        chip.pc -= 2;
+        chip.pc += 2;
     }
 }
 

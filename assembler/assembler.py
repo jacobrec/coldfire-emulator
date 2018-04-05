@@ -2,7 +2,7 @@ import parser
 import memory
 from s19_gen import to_byte_array
 import s19_gen
-import instructions_extended
+from instructions_extended import *
 
 
 class Assembler():
@@ -101,6 +101,8 @@ def assembleInstruction(instr):
         bin_strs = assembleBra(instr)
     elif instr.opcode.data[0] == "jmp":
         bin_strs = assembleJmp(instr)
+    elif instr.opcode.data[0] == "add":
+        bin_strs = assembleAdd(instr)
     '''
     Proposal for new technique: (need to import string)
     instrDict = {

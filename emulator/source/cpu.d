@@ -1,5 +1,6 @@
 module cpu;
 
+import instructions.other : get_number_string;
 /**
  * The coldfire cpu
  *
@@ -89,7 +90,11 @@ void printMemory(ref Cpu chip, int fromByte, int totalBytes){
     int b = 0;
     while(b < totalBytes){
         for(int i = 0; i < 8; i++){
-            writef("0x%X\t", chip.ram[b + fromByte]); 
+            string num = get_number_string(chip.ram[b + fromByte], 2);
+            while(num.length < 8){
+                num = "0"~num;
+            }
+            writef("%s ", num); 
             b++;
         }
         writeln();
