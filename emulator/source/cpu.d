@@ -20,7 +20,91 @@ struct Cpu{
     ushort tp;
 
     ushort opcode;
+
+    bool isExtend(){
+        return (this.CCR & 0b10000) != 0;
+    }
+    bool isNegative(){
+        return (this.CCR & 0b01000) != 0;
+    }
+    bool isZero(){
+        return (this.CCR & 0b00100) != 0;
+    }
+    bool isOverflow(){
+        return (this.CCR & 0b00010) != 0;
+    }
+    bool isCarry(){
+        return (this.CCR & 0b00001) != 0;
+    }
+    void setExtend(bool val){
+        if(val){
+            this.CCR |= 0b10000;
+        }else{
+            this.CCR &= ((-1) ^ 0b10000);
+        }
+    }
+    void setNegative(bool val){
+        if(val){
+            this.CCR |= 0b01000;
+        }else{
+            this.CCR &= ((-1) ^ 0b01000);
+        }
+    }
+    void setZero(bool val){
+        if(val){
+            this.CCR |= 0b00100;
+        }else{
+            this.CCR &= ((-1) ^ 0b00100);
+        }
+    }
+    void setOverflow(bool val){
+        if(val){
+            this.CCR |= 0b00010;
+        }else{
+            this.CCR &= ((-1) ^ 0b00010);
+        }
+    }
+    void setCarry(bool val){
+        if(val){
+            this.CCR |= 0b00001;
+        }else{
+            this.CCR &= ((-1) ^ 0b00001);
+        }
+    }
 }
+
+unittest{
+    Cpu chip = Cpu();
+    chip.CCR = 0b11010;
+    assert(chip.isExtend);
+    assert(chip.isNegative);
+    assert(!chip.isZero);
+    assert(chip.isOverflow);
+    assert(!chip.isCarry);
+
+    chip.setExtend(false);
+    assert(!chip.isExtend);
+    assert(chip.isNegative);
+    assert(!chip.isZero);
+    assert(chip.isOverflow);
+    assert(!chip.isCarry);
+    
+    chip.setCarry(true);
+    assert(!chip.isExtend);
+    assert(chip.isNegative);
+    assert(!chip.isZero);
+    assert(chip.isOverflow);
+    assert(chip.isCarry);
+    
+    chip.setOverflow(false);
+    assert(!chip.isExtend);
+    assert(chip.isNegative);
+    assert(!chip.isZero);
+    assert(!chip.isOverflow);
+    assert(chip.isCarry);
+
+}
+
 enum AddressMode{
     REG_DIRECT,
     ADD_DIRECT,
@@ -278,8 +362,8 @@ unittest{
     chip.pc = 98;
     writeLoc(getDest(chip, 0b001111), SIZE_BYTE, getSource(chip, 0b111001));
 
-    assert_eq(chip.ram[2], 0x49); 
-    assert_eq(chip.ram[1], 0x49); 
+    assert_eq(chip.ram[2], 0x49);
+    assert_eq(chip.ram[1], 0x49);
 
 
     // testing write
@@ -299,7 +383,7 @@ unittest{
     chip.A[0] = 0;
     chip.D[0] = 49;
 
-        
+
     writeLoc(getDest(chip, 0b000011, SIZE_BYTE), SIZE_BYTE, getSource(chip, 0b000000, SIZE_BYTE));
 
     assert_eq(chip.A[0], 1);
