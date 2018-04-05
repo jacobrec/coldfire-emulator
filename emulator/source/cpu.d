@@ -141,6 +141,7 @@ int readLoc(int* loc, ubyte size){
     }
 
 }
+
 void writeLoc(int* loc, ubyte size, int* data){
     if(size == SIZE_BYTE){
         *loc &= 0xFFFFFF00;
@@ -153,6 +154,18 @@ void writeLoc(int* loc, ubyte size, int* data){
         *loc |= (*data) & 0x0000FFFF;
     }
 }
+
+int swapEndien(int i){
+    return (((i & 0xFF)<<24) | ((i&0xFF00) << 8) | ((i&0xFF0000)>>8) | ((i&0xFF000000) >> 24));
+}
+short swapEndien(short i){
+    return cast(short)(((i&0xFF) << 8) | ((i&0xFF00)>>8));
+}
+unittest{
+    assert_eq(0x11223344, swapEndien(0x44332211));
+    assert_eq(0x1122, swapEndien(cast(short)0x2211));
+}
+
 
 void assert_eq(int a, int b){
     if(a != b){
