@@ -73,6 +73,29 @@ struct Cpu{
     }
 }
 
+void printRegisters(ref Cpu chip){
+    import std.stdio;
+    for(int i = 0; i < 8; i++){
+        writef("D%d: 0x%X\t\t",i, chip.D[i]);
+    }
+    writeln();
+    for(int i = 0; i < 8; i++){
+        writef("A%d: 0x%X\t\t",i, chip.A[i]);
+    }
+    writeln();
+}
+void printMemory(ref Cpu chip, int fromByte, int totalBytes){
+    import std.stdio;
+    int b = 0;
+    while(b < totalBytes){
+        for(int i = 0; i < 16; i++){
+            writef("0x%X\t", chip.ram[b + fromByte]); 
+            totalBytes--;
+        }
+        writeln();
+    }
+}
+
 unittest{
     Cpu chip = Cpu();
     chip.CCR = 0b11010;
@@ -88,14 +111,14 @@ unittest{
     assert(!chip.isZero);
     assert(chip.isOverflow);
     assert(!chip.isCarry);
-    
+
     chip.setCarry(true);
     assert(!chip.isExtend);
     assert(chip.isNegative);
     assert(!chip.isZero);
     assert(chip.isOverflow);
     assert(chip.isCarry);
-    
+
     chip.setOverflow(false);
     assert(!chip.isExtend);
     assert(chip.isNegative);

@@ -24,7 +24,10 @@ class Coldfire{
      * Runs every frame and performs a fetch, decode, execute cycle
      */
     void run(){
+
+        import std.stdio;
         fetch();
+        writef("0x%X\n", chip.opcode);
         decode()(chip);
     }
 
@@ -65,3 +68,4 @@ class Coldfire{
         chip.pc -= 2;
     }
 }
+

@@ -10,12 +10,23 @@ void trap(ref Cpu chip){
         case 15:
             trap15(chip);
             break;
+        case 9:
+            trap9(chip);
+            break;
         default:
             import std.stdio;
             writef("Error, trap #%d is not defined\n", trap_num);
             assert(0);
     }
 
+}
+
+void trap9(ref Cpu chip){
+    import std.stdio;
+    import std.c.stdlib;
+    writeln("Exiting...");
+    printRegisters(chip);
+    exit(0);
 }
 
 void trap15(ref Cpu chip){
