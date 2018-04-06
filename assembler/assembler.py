@@ -106,9 +106,53 @@ def assembleInstruction(instr):
     '''
     Proposal for new technique: (need to import string)
     instrDict = {
-    "move"    : assembleMove
-    "movea"   : assembleMove
-    "moveq"   : assembleMoveq
+    "move"    : assembleMove,
+    "movea"   : assembleMove,
+    "moveq"   : assembleMoveq,
+    "add"     : assembleAdd,
+    "adda"    : assembleAddA,
+    "addi"    : assembleAddI,
+    "addq"    : assembleAddQ,
+    "addx"    : assembleAddX,
+    "and"     : assembleAnd,
+    "andi"    : assembleAndI,
+    "asl"     : assembleAsL,
+    "asr"     : assembleAsR,
+    "bhi"     : assembleBcc,
+    "bls"     : assembleBcc,
+    "bcc"     : assembleBcc,
+    "bcs"     : assembleBcc,
+    "bne"     : assembleBcc,
+    "beq"     : assembleBcc,
+    "bvc"     : assembleBcc,
+    "bvs"     : assembleBcc,
+    "bpl"     : assembleBcc,
+    "bmi"     : assembleBcc,
+    "bge"     : assembleBcc,
+    "blt"     : assembleBcc,
+    "bgt"     : assembleBcc,
+    "ble"     : assembleBcc,
+    "bchg"    : assembleBchg,
+    "bclr"    : assembleBclr,
+    "bitrev"  : assembleBitrev,
+    "bra"     : assembleBra,
+    "bset"    : assembleBset,
+    "btst"    : assembleBtst,
+    "byterev" : assembleByterev,
+    "clr"     : assembleClr,
+    "cmp"     : assembleCmp,
+    "cmpa"    : assembleCmpA,
+    "cmpi"    : assembleCmpI,
+    "divs"    : assembleDivs,
+    "divu"    : assembleDivu,
+    "eor"     : assembleEor,
+    "eori"    : assembleEorI,
+    "ext"     : assembleExt,
+    "illegal" : assembleIllegal,
+    "lea"     : assembleLea,
+    "link"    : assembleLink,
+    "lsl"     : assembleLsl,
+    "lsr"     : assembleLsr
     }
     return instrDict[instr.opcode.data[0]](instr)
     '''
@@ -126,6 +170,7 @@ def assembleMove(instr):
 
 
 def assembleBra(instr):
+    # TODO: needs to have 16 or 32 bit displacement too
     return ["01100000", symbolicLocation(instr.mem_src.name, 8, True)]
 
 def assembleJmp(instr):
