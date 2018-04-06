@@ -93,12 +93,29 @@ def assembleAsR(instr):
     return [bin_str]
 
 def assembleBcc(instr):
-    # TODO: make work
-    return None
+    condition = {
+    "bcc" : "0100"
+    "bcs" : "0101"
+    "beq" : "0111"
+    "bge" : "1100"
+    "bgt" : "1110"
+    "bhi" : "0010"
+    "ble" : "1111"
+    "bls" : "0011"
+    "blt" : "1101"
+    "bmi" : "1011"
+    "bne" : "0110"
+    "bpl" : "1010"
+    "bvc" : "1000"
+    "bvs" : "1001"
+    }
+    bin_str = "0110" + condition[instr.opcode.data[0]]
+
+    return [bin_str, symbolicLocation(instr.mem_src.name, 8, True)]
 
 def assembleBchg(instr):
     bin_str = "0000"
-    if isinstance(instr, instr.mem_src) == ImmediateData:  # if literal
+    if isinstance(ImmediateData, instr.mem_src):  # if literal
         bin_str += "100010" + instr.mem_dest.modeStr() + instr.mem_dest.regStr()
         bin_str += "00000000" + numToBitStr(instr.mem_src.val, 8)
     else:
@@ -108,7 +125,7 @@ def assembleBchg(instr):
 
 def assembleBclr(instr):
     bin_str = "0000"
-    if isinstance(instr, instr.mem_src) == ImmediateData:  # if literal
+    if isinstance(ImmediateData, instr.mem_src):  # if literal
         bin_str += "100010" + instr.mem_dest.modeStr() + instr.mem_dest.regStr()
         bin_str += "00000000" + numToBitStr(instr.mem_src.val, 8)
     else:
@@ -121,7 +138,7 @@ def assembleBitrev(instr):
 
 def assembleBset(instr):
     bin_str = "0000"
-    if isinstance(instr, instr.mem_src) == ImmediateData:  # if literal
+    if isinstance(ImmediateData, instr.mem_src):  # if literal
         bin_str += "100011" + instr.mem_dest.modeStr() + instr.mem_dest.regStr()
         bin_str += "00000000" + numToBitStr(instr.mem_src.val, 8)
     else:
@@ -136,7 +153,7 @@ def assembleBsr(instr):
 
 def assembleBtst(instr):
     bin_str = "0000"
-    if isinstance(instr, instr.mem_src) == ImmediateData:  # if literal
+    if isinstance(ImmediateData, instr.mem_src):  # if literal
         bin_str += "100000" + instr.mem_dest.modeStr() + instr.mem_dest.regStr()
         bin_str += "00000000" + numToBitStr(instr.mem_src.val, 8)
     else:
@@ -257,7 +274,7 @@ def assembleLink(instr):
     return [bin_str]
 
 def assembleLsl(instr):
-    if isinstance(instr, instr.mem_src) == ImmediateData:
+    if isinstance(ImmediateData, instr.mem_src):
         bin_str = "1110" + numToBitStr(instr.mem_src.val, 3) + "110001"
         bin_str += instr.mem_dest.regStr()
     else:
@@ -266,7 +283,7 @@ def assembleLsl(instr):
     return [bin_str]
 
 def assembleLsr(instr):
-    if isinstance(instr, instr.mem_src) == ImmediateData:
+    if isinstance(ImmediateData, instr.mem_src):
         bin_str = "1110" + numToBitStr(instr.mem_src.val, 3) + "010001"
         bin_str += instr.mem_dest.regStr()
     else:
@@ -274,7 +291,14 @@ def assembleLsr(instr):
         bin_str += instr.mem_dest.regStr()
     return [bin_str]
 
-
+def assembleMoveA(instr):
+    bin_str = "00" + getSizeBitString(instr.opcode.data[1])
+    bin_str += instr.mem_dest.regStr() + "001"
+    bin_str += instr.mem_src.modeStr() + instr.mem_src.regStr()
+    returnData = [bin_str]
+    if len(instr) > 2:
+        returnData += assembleExtraData(instr)
+    return returnData
 
 def assembleNop(instr):
     return ["0100111001110001"]
