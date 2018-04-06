@@ -206,13 +206,6 @@ def assembleExtraData(instr):
         data += [new_dat[i:i + 16] for i in range(0, len(new_dat), 16)]
     return data
 
-def assembleImmediateData(mem):
-    data = None
-    if mem.regStr() == "000":  # abs short
-        data = numToBitStr(mem.val, 16, True)
-    elif mem.regStr() == "001":  # abs long
-        data = numToBitStr(mem.val, 32, True)
-    return data
 
 class symbolicLocation:
     def __init__(self, name, size, isRelative):
