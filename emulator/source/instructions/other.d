@@ -32,8 +32,17 @@ void trap9(ref Cpu chip){
 void trap15(ref Cpu chip){
     import std.stdio;
     switch((chip.D[0])){
-        case 0x0F:
+        case 0x0F: // print number %d1, with base %d2
             writeln(get_number_string((chip.D[1]), (chip.D[2])));
+            break;
+        case 0x06: //display char %d1.B
+            write(cast(char)chip.D[1]);
+            break;
+        case 0x05: // read char into %d1
+            readf!"%s"(cast(char)chip.D[1]);
+            break;
+        case 0x04: // read number into %d1
+            readf!"%d"(chip.D[1]);
             break;
         default:
             writef("Error, trap #15 task %d(%X) is not defined\n", chip.D[0],chip.D[0]);
