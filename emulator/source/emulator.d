@@ -3,6 +3,7 @@ module emulator;
 import cpu;
 import fileLoader;
 import instructions.instructions;
+import instructions.other: get_number_string;
 /**
   * Coldfire is the system to be emulated, this holds the fetch, decode, exucute loop
   * as well as the cpu which is passed to the decoded functions as a refernce
@@ -26,6 +27,14 @@ class Coldfire{
     void run(){
 
         fetch();
+
+        import std.stdio;
+        string s = get_number_string(chip.opcode,2);
+        while(s.length < 16){
+            s = "0" ~ s;
+        }
+        //writeln(s);
+
         decode()(chip);
     }
 

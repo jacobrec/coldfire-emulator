@@ -135,7 +135,10 @@ def to_hex_string(num, minDigits=0):
     >>> to_hex_string(0, 4)
     '0000'
     """
-    if isinstance(num, int) or isinstance(num, long):
+    if isinstance(num, float):
+        num = int(num)
+
+    if isinstance(num, int):
         s = hex(num)[2:]
         if minDigits > len(s):
             s = "0" * (minDigits - len(s)) + s

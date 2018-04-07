@@ -17,6 +17,7 @@ void move(ref Cpu chip){
     immutable ubyte dst = cast(ubyte)getBits(instr, 4, 6);
     immutable ubyte src = cast(ubyte)getBits(instr, 10, 6);
 
+
     writeLoc(getDest(chip, dst, size), size, getSource(chip, src, size));
 
 }

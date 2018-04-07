@@ -72,7 +72,7 @@ class Parser:
             if regType == "d":
                 return DataDirect(regNum)
         elif self._match(Decrement):  # AddressIndirectPreDecrement
-            self._consume(GroupStart, "expecting a '('")
+            self._consume(GroupStart, "decrement expecting a '('")
             reg = self._consume(Register, "expecting a 'register'").data
             self._consume(GroupEnd, "expecting a ')'")
             assert(reg[0] == 'a')
@@ -95,7 +95,7 @@ class Parser:
             return AddressIndirect(reg[1])
         elif self._match(Number):  # AddressIndirectWithOffset
             num = self._peek(-1).data
-            self._consume(GroupStart, "expecting a '('")
+            self._consume(GroupStart, "number expecting a '('")
             reg = self._consume(Register, "expecting a 'register'").data
             if self._match(Comma):  # ScaledAddressWithOffset
                 return self.partialScaledIndirectWithOffset(num, reg[1])

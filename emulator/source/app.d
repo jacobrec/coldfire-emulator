@@ -7,6 +7,8 @@ import core.stdc.stdlib;
 import emulator;
 import cpu;
 
+
+
 /**
  * Author: Jacob Reckhard, reckhard@ualberta.ca
  * Author: Jarrett Yu, jarrett@ualberta.ca
@@ -32,8 +34,8 @@ void main(string[] args){
     Coldfire emulator = new Coldfire();
     emulator.loadFile(args[1]);
     
-    // printMemory(emulator.chip, 0, 24);
-    for(int i = 0; i < 1000; i++){ // TODO: do somthing better
+    //printMemory(emulator.chip, 0, 128);
+    for(int i = 0; i < 150; i++){ // TODO: do somthing better
         emulator.run();
     }
 

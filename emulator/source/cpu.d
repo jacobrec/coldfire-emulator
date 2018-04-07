@@ -211,7 +211,8 @@ int* getMem(ref Cpu chip, ubyte mode, ubyte reg, ubyte size){
                     // TODO: PC scaled
                     break;
                 case 0b100: // This will return a literal that is the next 4 bytes
-                    chip.text[++chip.tp] = *(cast(int*) &chip.ram[chip.pc]);
+                    
+                    chip.text[++chip.tp] = swapEndien(*(cast(int*) &chip.ram[chip.pc]));
                     chip.pc += 4;
                     mem_loc = &chip.text[chip.tp];
                     break;

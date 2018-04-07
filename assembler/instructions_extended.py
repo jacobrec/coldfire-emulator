@@ -24,8 +24,24 @@ def getSizeBitString(size):
 
 
 def numToBitStr(num, minLength=0):
-    return format(num, '0' + str(minLength) + 'b')
+    if num >= 0:
+        return format(num, '0' + str(minLength) + 'b')
+    s = format(-num, '0' + str(minLength) + 'b')
+    a = []
+    for x in range(len(s)):
+        a.append("0" if s[x] == "1" else "1")
+    s = True
+    i = len(a)
+    while s:
+        i -= 1
+        if a[i] == "0":
+            a[i] = "1"
+            s = False
+        else:
+            a[i] = "0"
 
+
+    return "".join(a)
 
 def assembleAdd(instr):  # currently only supports first op mode
     bin_str = "1101"
@@ -367,6 +383,43 @@ def assembleSwap(instr):
     return ["0100100001000" + instr.mem_src.regStr()]
 
 
+def assembleMove(instr):
+    bin_str = "00" + getSizeBitString(instr.opcode.data[1])
+    bin_str += instr.mem_dest.regStr() + instr.mem_dest.modeStr()
+    bin_str += instr.mem_src.modeStr() + instr.mem_src.regStr()
+    returnData = [bin_str]
+    if len(instr) > 2:
+        returnData += assembleExtraData(instr)
+    return returnData
+
+
+def assembleBra(instr):
+    # TODO: needs to have 16 or 32 bit displacement too
+    return ["01100000", symbolicLocation(instr.mem_src.name, 8, True)]
+
+
+def assembleJmp(instr):
+    # TODO: allow more type for jump
+    ee = "111001"  # Locked into absolute long mode for now
+    ed = symbolicLocation(instr.mem_src.name, 16, False)
+    return ["0100111011", ee, ed]
+
+
+def assembleMoveq(instr):
+    bin_str = "0111"
+    bin_str += instr.mem_dest.regStr() + "0"
+    assert(instr.mem_src.val < 256)
+    bin_str += numToBitStr(instr.mem_src.val, 8)
+    return [bin_str]
+
+
+def assembleTrap(instr):
+    bin_str = "010011100100"
+    assert(instr.mem_src.val < 16)
+    bin_str += numToBitStr(instr.mem_src.val, 4)
+    return [bin_str]
+
+
 def assembleExtraData(instr):
     data = []
     if instr.mem_src.additionalsize > 0:
@@ -386,6 +439,9 @@ class symbolicLocation:
         self.name = name
         self.size = size
         self.isRelative = isRelative
+
+    def __len__(self):
+        return self.size
 
     def __str__(self):
         return "({}, size:{})".format(self.name, self.size)

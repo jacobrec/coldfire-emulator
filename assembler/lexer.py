@@ -112,6 +112,17 @@ class Lexer:
                 self._advance()
             else:
                 self._addTok(Number, num)
+        elif c == "-":
+            if self._peek() == "(":
+                self._addTok(singlechars[c])
+            else:
+                num = self._number()
+                if(self._peek() == "."):
+                    self._advance()
+                    self._addTok(MemLocLiteral, (num, self._peek()))
+                    self._advance()
+                else:
+                    self._addTok(Number, num)
         elif c.isalpha() or c == "_":
             self._operator()
         elif c in singlechars:
@@ -128,9 +139,14 @@ class Lexer:
         self._addTok(Register, (regType, int(regNum)))
 
     def _literal(self):
+        isNeg = 1
+        if self._peek() == "-":
+            self._advance()
+            isNeg = -1
+
         if self._peek().isdigit():
             self._advance()
-            self._addTok(Literal, self._number())
+            self._addTok(Literal, isNeg*self._number())
         elif self._peek().isalpha():
             self._advance()
             self._addTok(Literal, self._word())

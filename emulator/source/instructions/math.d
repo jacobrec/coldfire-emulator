@@ -22,9 +22,9 @@ void add(ref Cpu chip){
         dst = getMem(chip, 0b000, data, SIZE_LONG);
     }
 
+    int s = swapEndien(readLoc(src, SIZE_LONG));
     int val = swapEndien(readLoc(dst, SIZE_LONG)) + swapEndien(readLoc(src, SIZE_LONG));
     writeLoc(dst, SIZE_LONG, &val);
-
 
 }
 
