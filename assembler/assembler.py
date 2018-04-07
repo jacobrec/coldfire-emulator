@@ -92,6 +92,8 @@ def assembleInstruction(instr):
         "bhi": assembleBcc,
         "bls": assembleBcc,
         "bcc": assembleBcc,
+        "bra": assembleBcc,
+        "bt": assembleBcc,
         "bcs": assembleBcc,
         "bne": assembleBcc,
         "beq": assembleBcc,

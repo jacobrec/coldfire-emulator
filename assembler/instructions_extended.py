@@ -7,8 +7,6 @@ import assembler
 Operations to be done later: (we really need to figure out wild wildcards)
 Add
 Move
-B**
-Bra
 Make a function to add immediate data in form: addImmediateData(instr, w/l)
 Check mode if abs short or long
 '''
@@ -133,6 +131,8 @@ def assembleAsR(instr):
 
 def assembleBcc(instr):
     condition = {
+        "bt" : "0000",
+        "bra": "0000",
         "bcc": "0100",
         "bcs": "0101",
         "beq": "0111",
