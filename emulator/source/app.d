@@ -16,12 +16,12 @@ import cpu;
  */
 
 void main(string[] args){
-    writeln("############################################");
+    /+writeln("############################################");
     writeln("########      Coldfire Emulator     ########");
     writeln("# For when you are too lazy to walk up the #");
     writeln("# five flights of stairs to test your code #");
     writeln("############################################");
-
+    +/
     if (args.length < 2 || args.length >= 3){
         writeln("Usage: dub -- <filename>");
         return;
