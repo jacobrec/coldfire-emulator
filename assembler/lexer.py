@@ -131,6 +131,7 @@ class Lexer:
             if self.toks[-1].toktype is Terminator:
                 self._directive()
         else:
+            print("on line {}".format(self.line))
             assertAs(0, "Unrecognized charactor (%c)" % c)
 
     def _register(self):
