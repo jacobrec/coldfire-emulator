@@ -35,11 +35,7 @@ void main(string[] args){
     emulator.loadFile(args[1]);
     
     //printMemory(emulator.chip, 0, 128);
-    for(int i = 0; i < 150; i++){ // TODO: do somthing better
+    for(int i = 0; ; i++){
         emulator.run();
     }
-
-
-    writeln("Exiting emulator");
-    exit(0);
 }
