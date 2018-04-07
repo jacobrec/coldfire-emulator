@@ -94,7 +94,7 @@ void printMemory(ref Cpu chip, int fromByte, int totalBytes){
             while(num.length < 8){
                 num = "0"~num;
             }
-            writef("%s ", num); 
+            writef("%s ", num);
             b++;
         }
         writeln();
@@ -211,10 +211,8 @@ int* getMem(ref Cpu chip, ubyte mode, ubyte reg, ubyte size){
                     // TODO: PC scaled
                     break;
                 case 0b100: // This will return a literal that is the next 4 bytes
-                    
-                    chip.text[++chip.tp] = swapEndien(*(cast(int*) &chip.ram[chip.pc]));
+                    mem_loc = newValue(chip, (*(cast(int*) &chip.ram[chip.pc])));
                     chip.pc += 4;
-                    mem_loc = &chip.text[chip.tp];
                     break;
                 default:
                     import std.stdio;
@@ -229,6 +227,65 @@ int* getMem(ref Cpu chip, ubyte mode, ubyte reg, ubyte size){
     }
     assert(mem_loc);
     return mem_loc;
+}
+void push(ref Cpu chip, int val, ubyte size = SIZE_LONG){
+    if(size == SIZE_BYTE){
+        chip.A[7]--;
+    }else if(size == SIZE_WORD || size == SIZE_WORDM){
+        chip.A[7]-=2;
+    }else if(size == SIZE_LONG){
+        chip.A[7]-=4;
+    }
+
+    ubyte* loc = &chip.ram[chip.A[7]];
+    if(size == SIZE_BYTE){
+        *(loc) = cast(ubyte) val;
+    }else if(size == SIZE_WORD || size == SIZE_WORDM){
+        *(cast(ushort*) loc) = cast(ushort) val;
+    }else if(size == SIZE_LONG){
+        *(cast(int*) loc) = val;
+    }
+
+}
+int pop(ref Cpu chip, ubyte size = SIZE_LONG){
+
+    ubyte* loc = &chip.ram[chip.A[7]];
+    int val;
+    if(size == SIZE_BYTE){
+        val = cast(int) *(loc);
+    }else if(size == SIZE_WORD || size == SIZE_WORDM){
+        val = cast(int) *(cast(ushort*) loc);
+    }else if(size == SIZE_LONG){
+        val = *(cast(int*) loc);
+    }
+
+
+    if(size == SIZE_BYTE){
+        chip.A[7]++;
+    }else if(size == SIZE_WORD || size == SIZE_WORDM){
+        chip.A[7]+=2;
+    }else if(size == SIZE_LONG){
+        chip.A[7]+=4;
+    }
+
+    return val;
+
+}
+unittest{
+    Cpu chip = Cpu();
+    chip.A[7] = 100;
+    push(chip, 10);
+    push(chip, 20);
+    push(chip, 30);
+
+    assert_eq(30, pop(chip));
+    assert_eq(20, pop(chip));
+    assert_eq(10, pop(chip));
+
+}
+int* newValue(ref Cpu chip, int value){
+    chip.text[++chip.tp] = value;
+    return &chip.text[chip.tp];
 }
 
 int* getSource(ref Cpu chip, ubyte bits, ubyte size = SIZE_BYTE){

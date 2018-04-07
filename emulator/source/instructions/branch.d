@@ -3,7 +3,20 @@ module instructions.branch;
 import cpu;
 import instructions.instructions;
 
+void rts(ref Cpu chip){
+    assert(matches(chip.opcode, "0100 1110 0111 0101"));
+    chip.pc = pop(chip);
+}
+void bsr(ref Cpu chip){
+    ushort dsp  = cast(ushort) getBits(chip.opcode, 8, 8);
+    push(chip, chip.pc);
+    chip.pc += dsp;
+}
+void jsr(ref Cpu chip){
+    push(chip, chip.pc);
+    chip.pc = (readLoc(getSource(chip, cast(ubyte) getBits(chip.opcode, 10, 6), SIZE_LONG), SIZE_LONG));
 
+}
 
 void cmp(ref Cpu chip){
     assert(matches(chip.opcode, "1011 ...0 .. ......"));
@@ -117,4 +130,31 @@ unittest{
     cmp(chip);
     assert_eq(chip.CCR & 0b11111, 0b01000);
 
+
+
+    chip.pc = 100;
+    chip.opcode = 0b0110_0001_0000_0010;
+    bsr(chip);
+    assert_eq(102, chip.pc);
+    assert_eq(chip.ram[chip.A[7]], 100);
+
+    immutable a7tmp = chip.A[7];
+    chip.opcode = 0b0100111001110101;
+    rts(chip);
+    assert_eq(100, chip.pc);
+    assert_eq(a7tmp+4, chip.A[7]);
+
+
+    chip.pc = 100;
+    chip.D[0] = 0x49000000;
+    chip.opcode = 0b0100111010_000000;
+    jsr(chip);
+    assert_eq(chip.pc, 0x49);
+    jsr(chip);
+    assert_eq(chip.pc, 0x49);
+    chip.opcode = 0b0100111001110101;
+    rts(chip);
+    assert_eq(chip.pc, 0x49);
+    rts(chip);
+    assert_eq(chip.pc, 100);
 }

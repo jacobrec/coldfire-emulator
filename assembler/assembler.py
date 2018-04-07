@@ -108,7 +108,6 @@ def assembleInstruction(instr):
         "bchg": assembleBchg,
         "bclr": assembleBclr,
         "bitrev": assembleBitrev,
-        "bra": assembleBra,
         "bset": assembleBset,
         "btst": assembleBtst,
         "byterev": assembleByterev,
@@ -126,7 +125,9 @@ def assembleInstruction(instr):
         "link": assembleLink,
         "lsl": assembleLsl,
         "lsr": assembleLsr,
-        "trap": assembleTrap
+        "trap": assembleTrap,
+        "bsr": assembleBsr,
+        "rts": assembleRts
     }
     if not (instr.opcode.data[0] in instrDict):
         print(instr)

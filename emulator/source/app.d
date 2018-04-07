@@ -1,13 +1,16 @@
 module app;
 
 import std.stdio;
+import std.conv;
 import std.file;
+import std.string;
 import core.stdc.stdlib;
 
 import emulator;
 import cpu;
 
 
+bool debug_mode;
 
 /**
  * Author: Jacob Reckhard, reckhard@ualberta.ca
@@ -22,7 +25,24 @@ void main(string[] args){
     writeln("# five flights of stairs to test your code #");
     writeln("############################################");
     +/
-    if (args.length < 2 || args.length >= 3){
+
+        int l = cast(int)args.length;
+
+    foreach(string s; args){
+        if(s[0] == '-'){
+            if(s == "-d"){
+                debug_mode = true;
+            }
+            l--;
+        }
+    }
+
+    if(debug_mode){
+        writeln("Debug mode:");
+        writeln("- Press enter to execute next instruction");
+        writeln("- Enter number to view memory at that location");
+    }
+    if (l < 2 || l >= 3){
         writeln("Usage: dub -- <filename>");
         return;
     }
@@ -33,9 +53,16 @@ void main(string[] args){
     }
     Coldfire emulator = new Coldfire();
     emulator.loadFile(args[1]);
-    
+
     //printMemory(emulator.chip, 0, 128);
     for(int i = 0; ; i++){
-        emulator.run();
+        if(debug_mode){
+            string s = readln().strip();
+            if(isNumeric(s)){
+                printMemory(emulator.chip, to!int(s), 64);
+                continue;
+            }
+        }
+        emulator.run(debug_mode);
     }
 }

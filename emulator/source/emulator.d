@@ -14,6 +14,7 @@ class Coldfire{
 
     this(){
         chip = Cpu();
+        chip.A[7] = chip.ram.length - 1; // set stack pointer to end of memory
         funTable = getInstructionMap();
     }
 
@@ -24,16 +25,18 @@ class Coldfire{
      *
      * Runs every frame and performs a fetch, decode, execute cycle
      */
-    void run(){
+    void run(bool verbose = false){
 
         fetch();
 
-        import std.stdio;
-        string s = get_number_string(chip.opcode,2);
-        while(s.length < 16){
-            s = "0" ~ s;
+        if(verbose){
+            import std.stdio;
+            string s = get_number_string(chip.opcode,2);
+            while(s.length < 16){
+                s = "0" ~ s;
+            }
+            writeln(s);
         }
-        //writeln(s);
 
         decode()(chip);
     }

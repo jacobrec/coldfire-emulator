@@ -191,9 +191,7 @@ def assembleBset(instr):
 
 
 def assembleBsr(instr):
-    bin_str = "01100001"
-    bin_str += symbolicLocation(instr.mem_src.name, 8, True)
-    return [bin_str]
+    return ["01100001", symbolicLocation(instr.mem_src.name, 8, True)]
 
 
 def assembleBtst(instr):
