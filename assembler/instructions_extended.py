@@ -5,12 +5,7 @@ import s19_gen
 import assembler
 '''
 Operations to be done later: (we really need to figure out wild wildcards)
-Add
-Move
-B**
-Bra
-Make a function to add immediate data in form: addImmediateData(instr, w/l)
-Check mode if abs short or long
+
 '''
 
 
@@ -347,6 +342,12 @@ def assembleMoveA(instr):
     return returnData
 
 
+def assembleMoveQ(instr):
+    bin_str = "0111" + instr.mem_dest.regStr() + "0"
+    bin_str += numToBitStr(instr.mem_src.val, 8)
+    return [bin_str]
+
+
 def assembleNop(instr):
     return ["0100111001110001"]
 
@@ -365,6 +366,14 @@ def assembleStop(instr):
 
 def assembleSwap(instr):
     return ["0100100001000" + instr.mem_src.regStr()]
+
+
+def assemblePea(instr):
+    return ["0100100001" + instr.mem_src.modeStr() + instr.mem_src.regStr()]
+    
+
+def assembleUnlk(instr):
+    return ["0100111001011" + instr.mem_scr.regStr()]
 
 
 def assembleExtraData(instr):

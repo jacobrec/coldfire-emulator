@@ -130,6 +130,7 @@ def assembleInstruction(instr):
     "blt"     : assembleBcc,
     "bgt"     : assembleBcc,
     "ble"     : assembleBcc,
+    "bsr"     : assembleBsr,
     "bchg"    : assembleBchg,
     "bclr"    : assembleBclr,
     "bitrev"  : assembleBitrev,
@@ -150,7 +151,16 @@ def assembleInstruction(instr):
     "lea"     : assembleLea,
     "link"    : assembleLink,
     "lsl"     : assembleLsl,
-    "lsr"     : assembleLsr
+    "lsr"     : assembleLsr,
+    "jmp"     : assembleJmp,
+    "jsr"     : assembleJsr,
+    "nop"     : assembleNop,
+    "not"     : assembleNot,
+    "rts"     : assembleRts,
+    "stop"    : assembleStop,
+    "swap"    : assembleSwap,
+    "pea"     : assemblePea,
+    "unlk"    : assembleUnlk
     }
     return instrDict[instr.opcode.data[0]](instr)
     '''
