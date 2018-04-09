@@ -37,8 +37,14 @@ class Coldfire{
             }
             writeln(s);
         }
-
-        decode()(chip);
+        try{
+            decode()(chip);
+        }catch (Error e){
+            import std.stdio;
+            writeln("Error executing instruction at memory location ", (this.chip.pc-2));
+            writeln(e);
+            assert(0);
+        }
     }
 
 

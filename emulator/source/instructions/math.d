@@ -21,9 +21,16 @@ void add(ref Cpu chip){
         src = getSource(chip, other, SIZE_LONG);
         dst = getMem(chip, 0b000, data, SIZE_LONG);
     }
+    
+    int s = (readLoc(src, SIZE_LONG));
+    int d = (readLoc(dst, SIZE_LONG));
+    int val = swapEndien((s) + (d));
+   
 
-    int s = swapEndien(readLoc(src, SIZE_LONG));
-    int val = swapEndien(readLoc(dst, SIZE_LONG)) + swapEndien(readLoc(src, SIZE_LONG));
+
+    
+   
+
     writeLoc(dst, SIZE_LONG, &val);
 
 }
@@ -58,10 +65,21 @@ unittest{
     assert_eq(0x03000000, chip.D[0]);
 
 
+    chip.D[0] = 0xFFFFFFFF;
+    chip.D[1] = 0x01000000;
     instr = 0b1101_001_010_000000; // Add d1 to d0 and store in d1
     chip.opcode = instr;
     add(chip);
-    assert_eq(0x03000000, chip.D[0]);
-    assert_eq(0x05000000, chip.D[1]);
+    assert_eq(0xFFFFFFFF, chip.D[0]);
+    assert_eq(0x00000000, chip.D[1]);
+
+
+    chip.D[0] = 0xFF000000;
+    chip.D[1] = 0x01000000;
+    instr = 0b1101_001_010_000000; // Add d1 to d0 and store in d1
+    chip.opcode = instr;
+    add(chip);
+    assert_eq(0xFF000000, chip.D[0]);
+    assert_eq(0x00010000, chip.D[1]);
 
 }

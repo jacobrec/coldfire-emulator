@@ -43,6 +43,7 @@ void trap15(ref Cpu chip){
             break;
         case 0x04: // read number into %d1
             readf!"%d"(chip.D[1]);
+            chip.D[1] = swapEndien(chip.D[1]);
             break;
         default:
             writef("Error, trap #15 task %d(%X) is not defined\n", chip.D[0],chip.D[0]);

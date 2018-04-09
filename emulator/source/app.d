@@ -41,6 +41,7 @@ void main(string[] args){
         writeln("Debug mode:");
         writeln("- Press enter to execute next instruction");
         writeln("- Enter number to view memory at that location");
+        writeln("- Enter 'r' to view register at that location");
     }
     if (l < 2 || l >= 3){
         writeln("Usage: dub -- <filename>");
@@ -61,6 +62,8 @@ void main(string[] args){
             if(isNumeric(s)){
                 printMemory(emulator.chip, to!int(s), 64);
                 continue;
+            }else if(s == "r"){
+                printRegisters(emulator.chip);
             }
         }
         emulator.run(debug_mode);
