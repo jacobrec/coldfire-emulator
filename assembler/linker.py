@@ -54,7 +54,7 @@ def toByteArray(binStr):
 
 
 def s19File(startLoc, data):
-    n = 16  # Split data into 64 bit blocks for s19 file
+    n = 128  # Split data into 64 bit blocks for s19 file
     d = [data[i:i + n] for i in range(0, len(data), n)]
     loc = 0
     s19 = []
