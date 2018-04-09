@@ -39,6 +39,8 @@ instruction getInstruction(ushort instr){
         return &rts;
     }else if(matches(instr, "1100 .... .... ....")){
         return &and;
+    }else if(matches(instr, "1110 .... 10.0 1...")){
+        return &ls;
     }
     return null;
 }
