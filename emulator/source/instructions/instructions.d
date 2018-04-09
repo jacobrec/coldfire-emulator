@@ -21,14 +21,24 @@ instruction[ushort] getInstructionMap(){
 }
 
 instruction getInstruction(ushort instr){
-    if (     matches(instr, "1101 ...1 10.. ....")){
+    if (     matches(instr, "1101 .... 10.. ....")){
         return &add;
+    }else if(matches(instr, "0110 0001 .... ....")){
+        return &bsr;
+    }else if(matches(instr, "0100 1110 10.. ....")){
+        return &jsr;
     }else if(matches(instr, "1011 ...0 .... ....")){
         return &cmp;
+    }else if(matches(instr, "0110 .... .... ....")){
+        return &bcc;
     }else if(matches(instr, "0100 1110 0100 ....")){
         return &trap;
     }else if(matches(instr, "00.. .... .... ....")){
         return &move;
+    }else if(matches(instr, "0100 1110 0111 0101")){
+        return &rts;
+    }else if(matches(instr, "1100 .... .... ....")){
+        return &and;
     }
     return null;
 }
