@@ -127,6 +127,7 @@ def assembleInstruction(instr):
         "lsr": assembleLsr,
         "trap": assembleTrap,
         "bsr": assembleBsr,
+        "jsr": assembleJsr,
         "rts": assembleRts
     }
     if not (instr.opcode.data[0] in instrDict):
