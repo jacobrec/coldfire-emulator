@@ -1,5 +1,6 @@
 __pycache__/
 *.pyc
 *.swp
+*.s19
 coldfire-emulator
 coldfire-emulator-test-library
