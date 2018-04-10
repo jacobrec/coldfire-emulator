@@ -1,0 +1,33 @@
+In order to install and run our program, both python3 and D need to be installed on the computer. Python3 should already be installed on the cmput274 vm. The D compiler is not however.
+
+To install the D compiler, run the following commands in bash.
+
+sudo wget http://master.dl.sourceforge.net/project/d-apt/files/d-apt.list -O /etc/apt/sources.list.d/d-apt.list
+sudo apt-get update && sudo apt-get -y --allow-unauthenticated install --reinstall d-apt-keyring
+sudo apt-get update && sudo apt-get install dmd-compiler dub
+
+
+For a cleaner install, consider using snaps, which are built into ubuntu, note, this might take longer if snap hasn't been run in a while
+
+sudo snap install --classic dmd && sudo snap install --classic dub
+
+Then you can assemble coldfire assembly code by navigating to the projects root directory and calling the python module as follows
+
+python3 assembler <filename>
+
+for example
+python3 assembler fib.s
+
+Then, to run the assembled machine code, you must run the executable file calledcoldfire-emulator found in the emulator folder. To compile and run the code all at once, you can run
+
+dub run
+
+With dub, to pass the command line arguments to the executable file, you need to seperate arguments with --, so for example, if you wanted to run the fib.s19 that you just generated, you would type
+
+dub run -- ../fib.s19
+
+if you just wish to run an already compiled version of the emulator, from the root directory you can run 
+
+./emulator/coldfire-emulator fib.s19
+
+
