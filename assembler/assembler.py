@@ -17,7 +17,7 @@ class Assembler():
 
         self.assembled = ""
 
-    def assemble(self):
+    def assemble(self):  # forms instr blocks which are assembled and saved
         if len(self.blocks) == 0:
             self.makeBlocks()
         if not self.isBlocksAssembled:
@@ -28,14 +28,14 @@ class Assembler():
         self.blocks = []
         self.isBlocksAssembled = False
 
-    def makeBlocks(self):
+    def makeBlocks(self):  # checks type and starts parsing
         block = Block()
         for instr in self.source:
-            if isinstance(instr, memory.Label):
+            if isinstance(instr, memory.Label):  # is label marker add location
                 block.addInstructions([symbolicLocation(instr.name, 0, False)])
-            elif isinstance(instr, parser.Direct):
+            elif isinstance(instr, parser.Direct):  # is directive skip
                 pass
-            else:
+            else:  # if not above then is instr
                 block.addInstructions(assembleInstruction(instr))
         self.blocks = [block]
 
@@ -73,7 +73,7 @@ def assemble(stmts):
 def assembleInstruction(instr):
     """
         This is how it determines which instruction to assemble, it is a big
-        if else statement that calls other functions based on the op code
+        dictionary of functions based on the op code keys
     """
 
     instrDict = {
@@ -130,7 +130,7 @@ def assembleInstruction(instr):
         "jsr": assembleJsr,
         "rts": assembleRts
     }
-    if not (instr.opcode.data[0] in instrDict):
+    if not (instr.opcode.data[0] in instrDict):  # for invalid ops print for debug
         print(instr)
         return ""
 
