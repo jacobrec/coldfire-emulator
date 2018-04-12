@@ -18,10 +18,11 @@ python3 assembler <filename>
 for example
 python3 assembler fib.s
 
-Then, to run the assembled machine code, you must run the executable file calledcoldfire-emulator found in the emulator folder. To compile and run the code all at once, you can run
+Then, to run the assembled machine code, you must run the executable file called coldfire-emulator found in the emulator folder. To compile and run the code all at once, you can run
 
 dub run
 
+This needs to be done from the emulator folder.
 With dub, to pass the command line arguments to the executable file, you need to seperate arguments with --, so for example, if you wanted to run the fib.s19 that you just generated, you would type
 
 dub run -- ../fib.s19
